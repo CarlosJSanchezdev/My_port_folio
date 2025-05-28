@@ -1,11 +1,12 @@
 import { Component } from '@angular/core';
-import { title } from 'node:process';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-blog',
-  imports: [],
+  standalone: true,
+  imports: [CommonModule],
   templateUrl: './blog.component.html',
-  styleUrl: './blog.component.css'
+  styleUrls: ['./blog.component.css']
 })
 export class BlogComponent {
   articles = [
