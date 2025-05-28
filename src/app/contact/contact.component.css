@@ -1,0 +1,20 @@
+section {
+      max-width: 800px;
+      margin: 20px auto;
+      padding: 20px;
+    }
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    input, textarea, button {
+      padding: 10px;
+      font-size: 1rem;
+    }
+    button {
+      background: #333;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
