@@ -1,6 +1,13 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
+interface Article {
+  title: string;
+  summary: string;
+  content: string;
+  date: string;
+}
+
 @Component({
   selector: 'app-blog',
   standalone: true,
@@ -9,8 +16,21 @@ import { CommonModule } from '@angular/common';
   styleUrls: ['./blog.component.css']
 })
 export class BlogComponent {
-  articles = [
-  {title: 'Article Title 1', summary: 'This is a summary of the first blog article. Click to read more!'},
-  {title: 'Article Title 2', summary: 'This is a summary of the second blog article. Click to red more!'}
+  articles: Article[] = [
+    {
+      title: 'Artículo de ejemplo',
+      summary: 'Este es un resumen del primer artículo. ¡Haz clic para leer más!',
+      content: 'Contenido completo del artículo de ejemplo.',
+      date: '2025-06-05'
+    }
+    // Puedes agregar más artículos aquí
   ];
+  selectedArticle: Article | null = null;
+
+  selectArticle(article: Article) {
+    this.selectedArticle = article;
+  }
+  closeArticle() {
+    this.selectedArticle = null;
+  }
 }

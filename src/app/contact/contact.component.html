@@ -1,10 +1,19 @@
 <section>
-      <h2>Contact Me</h2>
-      <form (ngSubmit)="onSubmit()">
-        <input type="text" placeholder="Your Name" required />
-        <input type="email" placeholder="Your Email" required />
-        <textarea placeholder="Your Message" rows="5" required></textarea>
-        <button type="submit">Send Message</button>
-      </form>
-      <p *ngIf="formMessage" [style.color]="messageColor">{{ formMessage }}</p>
-    </section>
+  <h2>Contact Me</h2>
+  <form [formGroup]="contactForm" (ngSubmit)="onSubmit()" aria-label="Formulario de contacto">
+    <label for="name">Nombre</label>
+    <input id="name" type="text" formControlName="name" required aria-required="true" [attr.aria-invalid]="contactForm.get('name')?.invalid && contactForm.get('name')?.touched">
+    <div *ngIf="contactForm.get('name')?.invalid && contactForm.get('name')?.touched" style="color: red; font-size: 0.9em;">Nombre requerido (mínimo 2 caracteres).</div>
+
+    <label for="email">Email</label>
+    <input id="email" type="email" formControlName="email" required aria-required="true" [attr.aria-invalid]="contactForm.get('email')?.invalid && contactForm.get('email')?.touched">
+    <div *ngIf="contactForm.get('email')?.invalid && contactForm.get('email')?.touched" style="color: red; font-size: 0.9em;">Email válido requerido.</div>
+
+    <label for="message">Mensaje</label>
+    <textarea id="message" rows="5" formControlName="message" required aria-required="true" [attr.aria-invalid]="contactForm.get('message')?.invalid && contactForm.get('message')?.touched"></textarea>
+    <div *ngIf="contactForm.get('message')?.invalid && contactForm.get('message')?.touched" style="color: red; font-size: 0.9em;">Mensaje requerido (mínimo 10 caracteres).</div>
+
+    <button type="submit" [disabled]="contactForm.invalid">Enviar Mensaje</button>
+  </form>
+  <p *ngIf="formMessage" [style.color]="messageColor">{{ formMessage }}</p>
+</section>

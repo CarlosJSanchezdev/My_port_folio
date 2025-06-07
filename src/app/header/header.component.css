@@ -1,20 +1,43 @@
 header {
-      background: #333;
-      color: white;
-      padding: 1rem 0;
+      background: linear-gradient(135deg, #1e293b 0%, #64748b 100%);
+      color: #f8fafc;
       text-align: center;
+      padding: 1.2rem 0 1rem 0;
+      box-shadow: 0 2px 12px rgba(30,41,59,0.10);
+      font-size: 1.3rem;
+      letter-spacing: 0.5px;
+      border-radius: 0 0 18px 18px;
+      margin-bottom: 18px;
+      transition: background 0.3s;
     }
+    
+    header h1 {
+      margin: 0 0 8px 0;
+      font-size: 2.1rem;
+      background: linear-gradient(90deg, #38bdf8 10%, #1e293b 90%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
     nav {
       display: flex;
       justify-content: center;
-      gap: 20px;
+      gap: 24px;
       margin-top: 10px;
     }
     nav a {
-      color: white;
+      color: #38bdf8;
       text-decoration: none;
       font-weight: bold;
+      font-size: 1.1rem;
+      padding: 6px 16px;
+      border-radius: 6px;
+      background: linear-gradient(90deg, #1e293b 60%, #64748b 100%);
+      transition: background 0.2s, color 0.2s;
+      box-shadow: 0 2px 8px rgba(30,41,59,0.08);
     }
     nav a:hover {
-      text-decoration: underline;
+      background: #38bdf8;
+      color: #1e293b;
     }

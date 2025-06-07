@@ -1,7 +1,17 @@
- <section>
-      <h2>Blog</h2>
-      <article *ngFor="let article of articles">
-        <h3>{{ article.title }}</h3>
-        <p>{{ article.summary }}</p>
-      </article>
-    </section>
+<section>
+  <h2>Blog</h2>
+  <div *ngIf="!selectedArticle">
+    <article *ngFor="let article of articles" (click)="selectArticle(article)" class="blog-article">
+      <h3>{{ article.title }}</h3>
+      <span class="blog-date">{{ article.date }}</span>
+      <p>{{ article.summary }}</p>
+      <a class="about-btn" (click)="$event.stopPropagation(); selectArticle(article)">Leer más</a>
+    </article>
+  </div>
+  <div *ngIf="selectedArticle" class="blog-full">
+    <button class="about-btn" (click)="closeArticle()">Volver</button>
+    <h3>{{ selectedArticle.title }}</h3>
+    <span class="blog-date">{{ selectedArticle.date }}</span>
+    <p>{{ selectedArticle.content }}</p>
+  </div>
+</section>

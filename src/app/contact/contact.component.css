@@ -2,19 +2,47 @@ section {
       max-width: 800px;
       margin: 20px auto;
       padding: 20px;
+      background: #f8fafc;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px #e2e8f0;
+    }
+    h2 {
+      color: #1e293b;
+    }
+    p, span, h3, h4 {
+      color: #334155;
     }
     form {
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 14px;
+      margin-top: 18px;
     }
-    input, textarea, button {
+    input, textarea {
       padding: 10px;
+      border: 1px solid #e2e8f0;
+      border-radius: 4px;
       font-size: 1rem;
+      background: #fff;
+      color: #1e293b;
+      transition: border 0.2s;
+    }
+    input:focus, textarea:focus {
+      border: 1.5px solid #38bdf8;
+      outline: none;
     }
     button {
-      background: #333;
-      color: white;
+      background: #38bdf8;
+      color: #1e293b;
       border: none;
+      border-radius: 4px;
+      padding: 0.6rem 1.2rem;
+      font-weight: bold;
+      transition: background 0.2s, color 0.2s;
+      box-shadow: 0 2px 8px #e2e8f0;
       cursor: pointer;
+    }
+    button:hover {
+      background: #1e293b;
+      color: #38bdf8;
     }

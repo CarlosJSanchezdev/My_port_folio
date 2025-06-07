@@ -1,5 +1,12 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+
+interface Project {
+  title: string;
+  description: string;
+  url: string;
+  github?: string;
+}
 
 @Component({
   selector: 'app-projects',
@@ -8,10 +15,19 @@ import { CommonModule } from '@angular/common';
   templateUrl: './projects.component.html',
   styleUrls: ['./projects.component.css']
 })
-export class ProjectsComponent {
-  projects = [
-    {title: 'Project 1', description: 'A brief description of the project goes here.'},
-    {title: 'Project 2', description: 'A brief description of the project goes here.'}
-  ]
+export class ProjectsComponent implements OnInit {
+  projects: Project[] = [
+    // Ejemplo local
+    {
+      title: 'Project 1',
+      description: 'A brief description of the project goes here.',
+      url: 'https://miweb.com/project1',
+      github: 'https://github.com/usuario/project1'
+    },
+    // Puedes agregar más proyectos locales aquí
+  ];
 
+  ngOnInit() {
+    // Aquí podrías cargar más proyectos desde un backend o API en el futuro
+  }
 }

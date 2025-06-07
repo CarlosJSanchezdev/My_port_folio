@@ -1,9 +1,114 @@
-
 section {
-      max-width: 800px;
-      margin: 20px auto;
-      padding: 20px;
-    }
-    h2 {
-      color: #333;
-    }
+  max-width: 800px;
+  margin: 20px auto;
+  padding: 20px;
+  background: #f8fafc;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px #e2e8f0;
+}
+h2 {
+  color: #1e293b;
+}
+p, span, h3, h4 {
+  color: #334155;
+}
+section.about-hero {
+  max-width: 950px;
+  margin: 40px auto 0 auto;
+  padding: 40px 30px 30px 30px;
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 6px 32px rgba(35,41,70,0.14);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 32px;
+}
+
+.about-content {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.about-avatar {
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  object-fit: cover;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.10);
+  border: 4px solid #fff;
+  background: #eee;
+}
+
+.about-content h2 {
+  margin: 0 0 8px 0;
+  font-size: 2.2rem;
+  color: #232946;
+}
+
+.about-content h3 {
+  margin: 0 0 16px 0;
+  font-size: 1.3rem;
+  color: #666;
+  font-weight: 400;
+}
+
+.about-content p {
+  font-size: 1.1rem;
+  color: #444;
+  margin-bottom: 18px;
+}
+
+.about-btn {
+  display: inline-block;
+  background: #38bdf8;
+  color: #1e293b;
+  border: none;
+  border-radius: 4px;
+  padding: 0.6rem 1.2rem;
+  font-weight: bold;
+  text-decoration: none;
+  transition: background 0.2s, color 0.2s;
+  box-shadow: 0 2px 8px #e2e8f0;
+}
+.about-btn:hover {
+  background: #1e293b;
+  color: #38bdf8;
+}
+
+.about-highlights {
+  display: flex;
+  gap: 40px;
+  justify-content: center;
+  margin-top: 18px;
+}
+.about-highlights > div {
+  background: #e2e8f0;
+  border-radius: 8px;
+  padding: 14px 24px;
+  box-shadow: 0 2px 8px #e2e8f0;
+  text-align: center;
+}
+.about-highlights h4 {
+  color: #1e293b;
+}
+.about-highlights span {
+  color: #334155;
+  font-size: 1rem;
+}
+@media (max-width: 700px) {
+  .about-content {
+    flex-direction: column;
+    gap: 18px;
+  }
+  .about-highlights {
+    flex-direction: column;
+    gap: 18px;
+  }
+  section.about-hero {
+    padding: 18px 5px;
+  }
+}
