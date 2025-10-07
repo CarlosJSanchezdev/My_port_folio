@@ -13,5 +13,4 @@ export const routes: Routes = [
   { path: 'contact', component: ContactComponent },
   { path: 'footer', component: FooterComponent },
   { path: '**', component: AboutComponent } // Página 404 simple, puedes crear un componente NotFound para personalizar
-];
-// Nota: La ruta 'footer' no suele navegarse directamente, pero se incluye aquí por completitud.
+]
