@@ -42,8 +42,7 @@ def create_app():
 
 
 def register_blueprints(app):
-
-    from app.projects import bp as projects_bp
+    from app.routes.projects import bp as projects_bp
     from app.routes.blog import bp as blog_bp
     from app.routes.contact import bp as contact_bp
 
