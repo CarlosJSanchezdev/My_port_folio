@@ -120,7 +120,7 @@ def create_app():
         return response
 
         # Rate limiting basico
-        from colections import defaultdict
+        from collections import defaultdict
         from datetime import datetime, timedelta
         request_log = defaultdict(list)
 
