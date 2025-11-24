@@ -1,19 +1,180 @@
-<section>
-  <h2>Contact Me</h2>
-  <form [formGroup]="contactForm" (ngSubmit)="onSubmit()" aria-label="Formulario de contacto">
-    <label for="name">Nombre</label>
-    <input id="name" type="text" formControlName="name" required aria-required="true" [attr.aria-invalid]="contactForm.get('name')?.invalid && contactForm.get('name')?.touched">
-    <div *ngIf="contactForm.get('name')?.invalid && contactForm.get('name')?.touched" style="color: red; font-size: 0.9em;">Nombre requerido (mínimo 2 caracteres).</div>
+<div class="contact-page">
+  <!-- Header Section -->
+  <section class="contact-header">
+    <div class="header-content">
+      <h1 class="page-title">Contáctame</h1>
+      <p class="page-description">
+        ¿Tienes un proyecto en mente? ¿Quieres colaborar? ¡Me encantaría escucharte!
+        Completa el formulario o contáctame directamente.
+      </p>
+    </div>
+  </section>
 
-    <label for="email">Email</label>
-    <input id="email" type="email" formControlName="email" required aria-required="true" [attr.aria-invalid]="contactForm.get('email')?.invalid && contactForm.get('email')?.touched">
-    <div *ngIf="contactForm.get('email')?.invalid && contactForm.get('email')?.touched" style="color: red; font-size: 0.9em;">Email válido requerido.</div>
+  <!-- Contact Content -->
+  <section class="contact-content">
+    <div class="content-container">
+      <!-- Contact Info -->
+      <div class="contact-info">
+        <h2 class="section-title">Información de Contacto</h2>
+        <p class="info-description">
+          Estoy disponible para proyectos freelance, colaboraciones o simplemente
+          para charlar sobre tecnología y desarrollo.
+        </p>
 
-    <label for="message">Mensaje</label>
-    <textarea id="message" rows="5" formControlName="message" required aria-required="true" [attr.aria-invalid]="contactForm.get('message')?.invalid && contactForm.get('message')?.touched"></textarea>
-    <div *ngIf="contactForm.get('message')?.invalid && contactForm.get('message')?.touched" style="color: red; font-size: 0.9em;">Mensaje requerido (mínimo 10 caracteres).</div>
+        <div class="info-cards">
+          <div class="info-card">
+            <div class="info-icon">📧</div>
+            <div class="info-content">
+              <h3>Email</h3>
+              <a href="mailto:cjsatlas@hotmail.com">cjsatlas&#64;hotmail.com</a>
+            </div>
+          </div>
 
-    <button type="submit" [disabled]="contactForm.invalid">Enviar Mensaje</button>
-  </form>
-  <p *ngIf="formMessage" [style.color]="messageColor">{{ formMessage }}</p>
-</section>
+          <div class="info-card">
+            <div class="info-icon">📱</div>
+            <div class="info-content">
+              <h3>Teléfono</h3>
+              <a href="tel:+573176913321">+57 317 691 3321</a>
+            </div>
+          </div>
+
+          <div class="info-card">
+            <div class="info-icon">📍</div>
+            <div class="info-content">
+              <h3>Ubicación</h3>
+              <p>Santiago de Cali, Colombia</p>
+            </div>
+          </div>
+
+          <div class="info-card">
+            <div class="info-icon">⏰</div>
+            <div class="info-content">
+              <h3>Horario</h3>
+              <p>Lun - Vie: 9:00 AM - 6:00 PM</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Social Links -->
+        <div class="social-section">
+          <h3>Sígueme en Redes</h3>
+          <div class="social-links">
+            <a href="https://github.com/CarlosJSanchezdev" target="_blank" class="social-btn">
+              <span class="social-icon">💻</span>
+              <span>GitHub</span>
+            </a>
+            <a href="https://www.linkedin.com/in/carlos-sánchez-b9311b32b" target="_blank" class="social-btn">
+              <span class="social-icon">💼</span>
+              <span>LinkedIn</span>
+            </a>
+            <a href="https://twitter.com/carlosjsanchez" target="_blank" class="social-btn">
+              <span class="social-icon">🐦</span>
+              <span>Twitter</span>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Contact Form -->
+      <div class="contact-form-section">
+        <h2 class="section-title">Envíame un Mensaje</h2>
+
+        <form [formGroup]="contactForm" (ngSubmit)="onSubmit()" class="contact-form"
+          aria-label="Formulario de contacto">
+          <!-- Name Field -->
+          <div class="form-group">
+            <label for="name" class="form-label">Nombre Completo *</label>
+            <input id="name" type="text" formControlName="name" class="form-input" placeholder="Tu nombre"
+              [class.error]="contactForm.get('name')?.invalid && contactForm.get('name')?.touched" aria-required="true"
+              [attr.aria-invalid]="contactForm.get('name')?.invalid && contactForm.get('name')?.touched">
+            <div class="error-message" *ngIf="contactForm.get('name')?.invalid && contactForm.get('name')?.touched">
+              <span *ngIf="contactForm.get('name')?.errors?.['required']">El nombre es requerido</span>
+              <span *ngIf="contactForm.get('name')?.errors?.['minlength']">El nombre debe tener al menos 2
+                caracteres</span>
+            </div>
+          </div>
+
+          <!-- Email Field -->
+          <div class="form-group">
+            <label for="email" class="form-label">Email *</label>
+            <input id="email" type="email" formControlName="email" class="form-input" placeholder="tu@email.com"
+              [class.error]="contactForm.get('email')?.invalid && contactForm.get('email')?.touched"
+              aria-required="true"
+              [attr.aria-invalid]="contactForm.get('email')?.invalid && contactForm.get('email')?.touched">
+            <div class="error-message" *ngIf="contactForm.get('email')?.invalid && contactForm.get('email')?.touched">
+              <span *ngIf="contactForm.get('email')?.errors?.['required']">El email es requerido</span>
+              <span *ngIf="contactForm.get('email')?.errors?.['email']">Ingresa un email válido</span>
+            </div>
+          </div>
+
+          <!-- Subject Field -->
+          <div class="form-group">
+            <label for="subject" class="form-label">Asunto *</label>
+            <input id="subject" type="text" formControlName="subject" class="form-input"
+              placeholder="¿De qué quieres hablar?"
+              [class.error]="contactForm.get('subject')?.invalid && contactForm.get('subject')?.touched"
+              aria-required="true">
+            <div class="error-message"
+              *ngIf="contactForm.get('subject')?.invalid && contactForm.get('subject')?.touched">
+              El asunto es requerido
+            </div>
+          </div>
+
+          <!-- Message Field -->
+          <div class="form-group">
+            <label for="message" class="form-label">Mensaje *</label>
+            <textarea id="message" rows="6" formControlName="message" class="form-textarea"
+              placeholder="Cuéntame sobre tu proyecto o idea..."
+              [class.error]="contactForm.get('message')?.invalid && contactForm.get('message')?.touched"
+              aria-required="true"
+              [attr.aria-invalid]="contactForm.get('message')?.invalid && contactForm.get('message')?.touched"></textarea>
+            <div class="error-message"
+              *ngIf="contactForm.get('message')?.invalid && contactForm.get('message')?.touched">
+              <span *ngIf="contactForm.get('message')?.errors?.['required']">El mensaje es requerido</span>
+              <span *ngIf="contactForm.get('message')?.errors?.['minlength']">El mensaje debe tener al menos 10
+                caracteres</span>
+            </div>
+          </div>
+
+          <!-- Submit Button -->
+          <button type="submit" class="btn btn-primary submit-btn" [disabled]="contactForm.invalid || isSubmitting"
+            [class.loading]="isSubmitting">
+            <span *ngIf="!isSubmitting">📨 Enviar Mensaje</span>
+            <span *ngIf="isSubmitting">⏳ Enviando...</span>
+          </button>
+
+          <!-- Form Message -->
+          <div class="form-message" *ngIf="formMessage" [class.success]="messageType === 'success'"
+            [class.error]="messageType === 'error'">
+            {{ formMessage }}
+          </div>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ Section -->
+  <section class="faq-section">
+    <div class="faq-container">
+      <h2 class="section-title">Preguntas Frecuentes</h2>
+      <div class="faq-grid">
+        <div class="faq-item">
+          <h3>⏱️ ¿Cuál es tu tiempo de respuesta?</h3>
+          <p>Generalmente respondo en menos de 24 horas durante días hábiles.</p>
+        </div>
+        <div class="faq-item">
+          <h3>💼 ¿Estás disponible para proyectos freelance?</h3>
+          <p>Sí, estoy abierto a proyectos freelance interesantes y desafiantes.</p>
+        </div>
+        <div class="faq-item">
+          <h3>🌍 ¿Trabajas de forma remota?</h3>
+          <p>Sí, trabajo completamente remoto con equipos de todo el mundo.</p>
+        </div>
+        <div class="faq-item">
+          <h3>💰 ¿Cómo son tus tarifas?</h3>
+          <p>Depende del proyecto. Contáctame para discutir los detalles y obtener una cotización.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>

@@ -1,29 +1,143 @@
-<section class="about-hero">
-  <div class="about-content">
-    <img src="/assets/profile.jpg" alt="Foto de perfil" class="about-avatar" />
-    <div>
-      <h2>¡Hola! Soy Carlos Sánchez</h2>
-      <h3>Desarrollador web/movil</h3>
-      <p>
-        Apasionado por la tecnología, la innovación y la creación de soluciones digitales que 
-        impactan positivamente a las personas y empresas. Tengo experiencia en Angular, Node.js,
-        Python, flask y tecnologías modernas de frontend y backend.
+<div class="about-page">
+  <!-- Hero Section -->
+  <section class="hero-section">
+    <div class="hero-content">
+      <div class="hero-text">
+        <div class="hero-greeting animate-fade-in">
+          <span class="wave">👋</span>
+          <span class="greeting-text">Hola, soy</span>
+        </div>
+        <h1 class="hero-title animate-slide-in-left">
+          Carlos Sánchez
+        </h1>
+        <h2 class="hero-subtitle animate-slide-in-left">
+          <span class="typing-text">Desarrollador Full Stack</span>
+        </h2>
+        <p class="hero-description animate-fade-in">
+          Apasionado por crear soluciones digitales innovadoras que transforman ideas en
+          experiencias excepcionales. Especializado en desarrollo web y móvil con tecnologías
+          modernas como Angular, React Native, Python y Node.js.
+        </p>
+        <div class="hero-actions animate-fade-in">
+          <a routerLink="/projects" class="btn btn-primary">
+            Ver Proyectos
+          </a>
+          <a routerLink="/contact" class="btn btn-secondary">
+            Contactar
+          </a>
+        </div>
+      </div>
+      <div class="hero-image animate-scale-in">
+        <div class="image-wrapper">
+          <img src="/assets/profile.jpg" alt="Carlos Sánchez - Desarrollador Full Stack" class="profile-image" />
+          <div class="image-decoration"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="hero-stats">
+      <div class="stat-item animate-fade-in">
+        <div class="stat-value">{{ stats.experience }}</div>
+        <div class="stat-label">Años de Experiencia</div>
+      </div>
+      <div class="stat-item animate-fade-in">
+        <div class="stat-value">{{ stats.projects }}+</div>
+        <div class="stat-label">Proyectos Completados</div>
+      </div>
+      <div class="stat-item animate-fade-in">
+        <div class="stat-value">{{ stats.technologies }}+</div>
+        <div class="stat-label">Tecnologías</div>
+      </div>
+      <div class="stat-item animate-fade-in">
+        <div class="stat-value">{{ stats.satisfaction }}%</div>
+        <div class="stat-label">Satisfacción</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Skills Section -->
+  <section class="skills-section">
+    <div class="section-header">
+      <h2 class="section-title">Habilidades Técnicas</h2>
+      <p class="section-description">
+        Tecnologías y herramientas con las que trabajo
       </p>
-      <a href="/assets/Cv_CarlosSanchez.pdf" target="_blank" class="about-btn">Descargar CV</a>
     </div>
-  </div>
-  <div class="about-highlights">
-    <div>
-      <h4>+1.5 años</h4>
-      <span>de experiencia</span>
+
+    <div class="skills-grid">
+      <div class="skill-category" *ngFor="let category of skillCategories">
+        <h3 class="category-title">{{ category.name }}</h3>
+        <div class="skills-list">
+          <div class="skill-item" *ngFor="let skill of category.skills">
+            <div class="skill-icon">{{ skill.icon }}</div>
+            <div class="skill-info">
+              <div class="skill-name">{{ skill.name }}</div>
+              <div class="skill-level">
+                <div class="skill-bar">
+                  <div class="skill-progress" [style.width.%]="skill.level"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-    <div>
-      <h4>+2 proyectos</h4>
-      <span>completados</span>
+  </section>
+
+  <!-- About Me Section -->
+  <section class="about-me-section">
+    <div class="about-me-content">
+      <div class="about-me-text">
+        <h2 class="section-title">Sobre Mí</h2>
+        <p>
+          Soy un desarrollador full stack con más de {{ stats.experience }} años de experiencia
+          en el desarrollo de aplicaciones web y móviles. Mi pasión es crear soluciones
+          tecnológicas que resuelvan problemas reales y mejoren la vida de las personas.
+        </p>
+        <p>
+          He trabajado en proyectos que van desde aplicaciones de gestión empresarial hasta
+          plataformas de inteligencia artificial, siempre enfocándome en la calidad del código,
+          la experiencia del usuario y las mejores prácticas de desarrollo.
+        </p>
+        <p>
+          Cuando no estoy programando, me gusta aprender nuevas tecnologías, contribuir a
+          proyectos open source y compartir conocimientos con la comunidad de desarrolladores.
+        </p>
+        <div class="about-me-actions">
+          <a href="/assets/cv_cjs.pdf" target="_blank" class="btn btn-primary">
+            📄 Descargar CV
+          </a>
+          <a href="https://github.com/CarlosJSanchezdev" target="_blank" class="btn btn-secondary">
+            💻 GitHub
+          </a>
+          <a href="https://www.linkedin.com/in/carlos-sánchez-b9311b32b" target="_blank" class="btn btn-secondary">
+            💼 LinkedIn
+          </a>
+        </div>
+      </div>
+      <div class="about-me-highlights">
+        <div class="highlight-card">
+          <div class="highlight-icon">🎯</div>
+          <h3>Enfoque</h3>
+          <p>Calidad y excelencia en cada línea de código</p>
+        </div>
+        <div class="highlight-card">
+          <div class="highlight-icon">🚀</div>
+          <h3>Innovación</h3>
+          <p>Siempre explorando nuevas tecnologías y metodologías</p>
+        </div>
+        <div class="highlight-card">
+          <div class="highlight-icon">🤝</div>
+          <h3>Colaboración</h3>
+          <p>Trabajo en equipo y comunicación efectiva</p>
+        </div>
+        <div class="highlight-card">
+          <div class="highlight-icon">📚</div>
+          <h3>Aprendizaje</h3>
+          <p>Mejora continua y adaptación constante</p>
+        </div>
+      </div>
     </div>
-    <div>
-      <h4>100%</h4>
-      <span>compromiso con la calidad</span>
-    </div>
-  </div>
-</section>
+  </section>
+</div>

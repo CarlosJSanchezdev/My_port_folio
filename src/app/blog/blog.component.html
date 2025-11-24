@@ -1,17 +1,123 @@
-<section>
-  <h2>Blog</h2>
+<div class="blog-page">
+  <!-- Blog List View -->
   <div *ngIf="!selectedArticle">
-    <article *ngFor="let article of articles" (click)="selectArticle(article)" class="blog-article">
-      <h3>{{ article.title }}</h3>
-      <span class="blog-date">{{ article.date }}</span>
-      <p>{{ article.summary }}</p>
-      <a class="about-btn" (click)="$event.stopPropagation(); selectArticle(article)">Leer más</a>
-    </article>
+    <!-- Header Section -->
+    <section class="blog-header">
+      <div class="header-content">
+        <h1 class="page-title">Blog</h1>
+        <p class="page-description">
+          Artículos sobre desarrollo web, tecnologías modernas y mejores prácticas de programación.
+        </p>
+      </div>
+    </section>
+
+    <!-- Filter Section -->
+    <section class="filter-section">
+      <div class="filter-container">
+        <h2 class="filter-title">Categorías</h2>
+        <div class="filter-buttons">
+          <button *ngFor="let category of categories" class="filter-btn" [class.active]="selectedCategory === category"
+            (click)="filterByCategory(category)">
+            {{ category === 'all' ? 'Todas' : category }}
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Articles Grid -->
+    <section class="articles-section">
+      <div class="articles-container">
+        <div class="articles-grid">
+          <article *ngFor="let article of filteredArticles" class="article-card" (click)="selectArticle(article)">
+            <div class="article-image">
+              <img [src]="article.image || '/assets/blog/placeholder.png'" [alt]="article.title" class="card-image" />
+              <div class="article-category">{{ article.category }}</div>
+            </div>
+            <div class="article-content">
+              <div class="article-meta">
+                <span class="article-date">📅 {{ article.date }}</span>
+                <span class="article-read-time">⏱️ {{ article.readTime }}</span>
+              </div>
+              <h3 class="article-title">{{ article.title }}</h3>
+              <p class="article-summary">{{ article.summary }}</p>
+              <div class="article-tags">
+                <span class="tag" *ngFor="let tag of article.tags">{{ tag }}</span>
+              </div>
+              <div class="article-footer">
+                <span class="article-author">Por {{ article.author }}</span>
+                <button class="read-more-btn">Leer más →</button>
+              </div>
+            </div>
+          </article>
+        </div>
+
+        <!-- Empty State -->
+        <div class="empty-state" *ngIf="filteredArticles.length === 0">
+          <div class="empty-icon">📝</div>
+          <h3>No hay artículos en esta categoría</h3>
+          <p>Intenta seleccionar otra categoría</p>
+        </div>
+      </div>
+    </section>
   </div>
-  <div *ngIf="selectedArticle" class="blog-full">
-    <button class="about-btn" (click)="closeArticle()">Volver</button>
-    <h3>{{ selectedArticle.title }}</h3>
-    <span class="blog-date">{{ selectedArticle.date }}</span>
-    <p>{{ selectedArticle.content }}</p>
+
+  <!-- Article Detail View -->
+  <div *ngIf="selectedArticle" class="article-detail">
+    <!-- Article Header -->
+    <section class="detail-header">
+      <div class="detail-header-content">
+        <button class="back-btn" (click)="closeArticle()">
+          ← Volver al Blog
+        </button>
+        <div class="detail-category">{{ selectedArticle.category }}</div>
+        <h1 class="detail-title">{{ selectedArticle.title }}</h1>
+        <div class="detail-meta">
+          <span class="meta-item">
+            <span class="meta-icon">👤</span>
+            {{ selectedArticle.author }}
+          </span>
+          <span class="meta-item">
+            <span class="meta-icon">📅</span>
+            {{ selectedArticle.date }}
+          </span>
+          <span class="meta-item">
+            <span class="meta-icon">⏱️</span>
+            {{ selectedArticle.readTime }} de lectura
+          </span>
+        </div>
+        <div class="detail-tags">
+          <span class="tag" *ngFor="let tag of selectedArticle.tags">{{ tag }}</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Article Content -->
+    <section class="detail-content">
+      <div class="content-wrapper">
+        <div class="article-image-large" *ngIf="selectedArticle.image">
+          <img [src]="selectedArticle.image" [alt]="selectedArticle.title" />
+        </div>
+        <div class="article-body">
+          <p [innerHTML]="selectedArticle.content | nl2br"></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Article Footer -->
+    <section class="detail-footer">
+      <div class="footer-content">
+        <div class="share-section">
+          <h3>Compartir este artículo</h3>
+          <div class="share-buttons">
+            <button class="share-btn twitter">🐦 Twitter</button>
+            <button class="share-btn linkedin">💼 LinkedIn</button>
+            <button class="share-btn facebook">📘 Facebook</button>
+          </div>
+        </div>
+        <button class="back-btn-bottom" (click)="closeArticle()">
+          ← Volver al Blog
+        </button>
+      </div>
+    </section>
   </div>
-</section>
+</div>

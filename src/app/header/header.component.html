@@ -1,9 +1,68 @@
-<header>
-      <h1>My Personal Portfolio</h1>
-      <nav>
-        <a routerLink="/about">About Me</a>
-        <a routerLink="/projects">Projects</a>
-        <a routerLink="/blog">Blog</a>
-        <a routerLink="/contact">Contact</a>
-      </nav>
-    </header>
+<header class="header">
+  <div class="header-container">
+    <!-- Logo -->
+    <div class="header-logo">
+      <a routerLink="/about" class="logo-link">
+        <span class="logo-text">Carlos</span>
+        <span class="logo-accent">Sánchez</span>
+      </a>
+    </div>
+
+    <!-- Desktop Navigation -->
+    <nav class="header-nav">
+      <a routerLink="/about" routerLinkActive="active" class="nav-link">
+        <span class="nav-icon">👋</span>
+        <span>About</span>
+      </a>
+      <a routerLink="/projects" routerLinkActive="active" class="nav-link">
+        <span class="nav-icon">💼</span>
+        <span>Projects</span>
+      </a>
+      <a routerLink="/blog" routerLinkActive="active" class="nav-link">
+        <span class="nav-icon">📝</span>
+        <span>Blog</span>
+      </a>
+      <a routerLink="/contact" routerLinkActive="active" class="nav-link">
+        <span class="nav-icon">📧</span>
+        <span>Contact</span>
+      </a>
+    </nav>
+
+    <!-- CTA Button -->
+    <div class="header-actions">
+      <a href="/assets/cv_cjs.pdf" target="_blank" class="btn btn-primary btn-sm">
+        Download CV
+      </a>
+    </div>
+
+    <!-- Mobile Menu Toggle -->
+    <button class="mobile-menu-toggle" (click)="toggleMobileMenu()" aria-label="Toggle menu">
+      <span class="hamburger-line"></span>
+      <span class="hamburger-line"></span>
+      <span class="hamburger-line"></span>
+    </button>
+  </div>
+
+  <!-- Mobile Navigation -->
+  <nav class="mobile-nav" [class.active]="mobileMenuOpen">
+    <a routerLink="/about" routerLinkActive="active" class="mobile-nav-link" (click)="closeMobileMenu()">
+      <span class="nav-icon">👋</span>
+      <span>About</span>
+    </a>
+    <a routerLink="/projects" routerLinkActive="active" class="mobile-nav-link" (click)="closeMobileMenu()">
+      <span class="nav-icon">💼</span>
+      <span>Projects</span>
+    </a>
+    <a routerLink="/blog" routerLinkActive="active" class="mobile-nav-link" (click)="closeMobileMenu()">
+      <span class="nav-icon">📝</span>
+      <span>Blog</span>
+    </a>
+    <a routerLink="/contact" routerLinkActive="active" class="mobile-nav-link" (click)="closeMobileMenu()">
+      <span class="nav-icon">📧</span>
+      <span>Contact</span>
+    </a>
+    <a href="/assets/cv_cjs.pdf" target="_blank" class="mobile-nav-link mobile-cta">
+      Download CV
+    </a>
+  </nav>
+</header>
