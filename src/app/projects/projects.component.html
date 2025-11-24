@@ -1,13 +1,108 @@
-<section>
-  <h2>Projects</h2>
-  <div class="projects">
-    <div class="project" *ngFor="let project of projects">
-      <h3>{{ project.title }}</h3>
-      <p>{{ project.description }}</p>
-      <div class="project-links">
-        <a *ngIf="project.url" [href]="project.url" target="_blank" class="about-btn">Ver Proyecto</a>
-        <a *ngIf="project.github" [href]="project.github" target="_blank" class="about-btn github-btn">GitHub</a>
+<div class="projects-page">
+  <!-- Header Section -->
+  <section class="projects-header">
+    <div class="header-content">
+      <h1 class="page-title">Mis Proyectos</h1>
+      <p class="page-description">
+        Una colección de proyectos en los que he trabajado, desde aplicaciones móviles
+        con IA hasta sistemas backend robustos y aplicaciones web modernas.
+      </p>
+    </div>
+  </section>
+
+  <!-- Featured Projects -->
+  <section class="featured-section" *ngIf="featuredProjects.length > 0">
+    <div class="section-container">
+      <h2 class="section-title">Proyectos Destacados</h2>
+      <div class="featured-grid">
+        <div class="project-card featured-card" *ngFor="let project of featuredProjects">
+          <div class="project-image">
+            <img [src]="project.featured_image || '/assets/projects/placeholder.png'" [alt]="project.title"
+              class="card-image" />
+            <div class="project-overlay">
+              <div class="overlay-content">
+                <h3>{{ project.title }}</h3>
+                <p>{{ project.description }}</p>
+              </div>
+            </div>
+          </div>
+          <div class="project-content">
+            <div class="project-header">
+              <h3 class="project-title">{{ project.title }}</h3>
+              <span class="project-category">{{ project.category }}</span>
+            </div>
+            <p class="project-description">{{ project.description }}</p>
+            <div class="project-tech">
+              <span class="tech-tag" *ngFor="let tech of project.technologies">
+                {{ tech }}
+              </span>
+            </div>
+            <div class="project-links">
+              <a *ngIf="project.live_demo_url" [href]="project.live_demo_url" target="_blank" class="btn btn-primary">
+                🌐 Ver Proyecto
+              </a>
+              <a *ngIf="project.github_url" [href]="project.github_url" target="_blank" class="btn btn-secondary">
+                💻 GitHub
+              </a>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
-  </div>
-</section>
+  </section>
+
+  <!-- All Projects -->
+  <section class="all-projects-section">
+    <div class="section-container">
+      <div class="projects-controls">
+        <h2 class="section-title">Todos los Proyectos</h2>
+        <div class="filter-buttons">
+          <button *ngFor="let category of categories" class="filter-btn" [class.active]="selectedCategory === category"
+            (click)="filterProjects(category)">
+            {{ category === 'all' ? 'Todos' : category }}
+          </button>
+        </div>
+      </div>
+
+      <div class="projects-grid">
+        <div class="project-card" *ngFor="let project of filteredProjects">
+          <div class="project-image">
+            <img [src]="project.featured_image || '/assets/projects/placeholder.png'" [alt]="project.title"
+              class="card-image" />
+            <div class="project-badge" *ngIf="project.is_featured">
+              ⭐ Destacado
+            </div>
+          </div>
+          <div class="project-content">
+            <div class="project-header">
+              <h3 class="project-title">{{ project.title }}</h3>
+              <span class="project-category">{{ project.category }}</span>
+            </div>
+            <p class="project-description">{{ project.description }}</p>
+            <div class="project-tech">
+              <span class="tech-tag" *ngFor="let tech of project.technologies">
+                {{ tech }}
+              </span>
+            </div>
+            <div class="project-links">
+              <a *ngIf="project.live_demo_url" [href]="project.live_demo_url" target="_blank"
+                class="btn btn-primary btn-sm">
+                Ver Proyecto
+              </a>
+              <a *ngIf="project.github_url" [href]="project.github_url" target="_blank"
+                class="btn btn-secondary btn-sm">
+                GitHub
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="empty-state" *ngIf="filteredProjects.length === 0">
+        <div class="empty-icon">📂</div>
+        <h3>No hay proyectos en esta categoría</h3>
+        <p>Intenta seleccionar otra categoría</p>
+      </div>
+    </div>
+  </section>
+</div>

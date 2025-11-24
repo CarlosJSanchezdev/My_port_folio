@@ -1,12 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-
-interface Project {
-  title: string;
-  description: string;
-  url: string;
-  github?: string;
-}
+import { ProjectsService, Project } from '../services/projects.service';
+import { PROJECTS } from '../config/portfolio.config';
 
 @Component({
   selector: 'app-projects',
@@ -16,18 +11,66 @@ interface Project {
   styleUrls: ['./projects.component.css']
 })
 export class ProjectsComponent implements OnInit {
-  projects: Project[] = [
-    // Ejemplo local
-    {
-      title: 'Project 1',
-      description: 'A brief description of the project goes here.',
-      url: 'https://miweb.com/project1',
-      github: 'https://github.com/usuario/project1'
-    },
-    // Puedes agregar más proyectos locales aquí
-  ];
+  projects: Project[] = [];
+  filteredProjects: Project[] = [];
+  selectedCategory: string = 'all';
+  categories: string[] = ['all', 'Web', 'Mobile', 'Backend'];
+  
+  // Loading and error states
+  isLoading: boolean = true;
+  error: string | null = null;
+  useStaticData: boolean = false;
+
+  constructor(private projectsService: ProjectsService) {}
 
   ngOnInit() {
-    // Aquí podrías cargar más proyectos desde un backend o API en el futuro
+    this.loadProjects();
+  }
+
+  /**
+   * Load projects from API with fallback to static data
+   */
+  loadProjects() {
+    this.isLoading = true;
+    this.error = null;
+
+    this.projectsService.getProjects().subscribe({
+      next: (projects) => {
+        this.projects = projects;
+        this.filterProjects('all');
+        this.isLoading = false;
+        this.useStaticData = false;
+      },
+      error: (err) => {
+        console.error('Error loading projects from API:', err);
+        this.error = 'Could not load projects from server. Using static data.';
+        
+        // Fallback to static data
+        this.projects = PROJECTS as any;
+        this.filterProjects('all');
+        this.isLoading = false;
+        this.useStaticData = true;
+      }
+    });
+  }
+
+  filterProjects(category: string) {
+    this.selectedCategory = category;
+    if (category === 'all') {
+      this.filteredProjects = this.projects;
+    } else {
+      this.filteredProjects = this.projects.filter(p => p.category === category);
+    }
+  }
+
+  get featuredProjects(): Project[] {
+    return this.projects.filter(p => p.is_featured);
+  }
+
+  /**
+   * Retry loading from API
+   */
+  retry() {
+    this.loadProjects();
   }
 }

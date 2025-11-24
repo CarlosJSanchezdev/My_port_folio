@@ -40,3 +40,22 @@ testem.log
 # System files
 .DS_Store
 Thumbs.db
+
+# Backend (Flask/Python)
+backend/.env
+backend/.venv
+backend/venv
+backend/instance/
+backend/logs/
+backend/__pycache__/
+backend/**/*.pyc
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/

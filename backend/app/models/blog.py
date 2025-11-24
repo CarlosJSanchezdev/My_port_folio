@@ -13,6 +13,7 @@ class BlogPost(db.Model): # Modelo para los blogposts del portafolio
     published = db.Column(db.Boolean, default=False)    
     published_at = db.Column(db.DateTime, nullable=True)
     tags = db.Column(db.String(200), nullable=True)
+    read_time = db.Column(db.Integer, default=5)  # Tiempo de lectura en minutos
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
@@ -30,6 +31,7 @@ class BlogPost(db.Model): # Modelo para los blogposts del portafolio
             'published': self.published,
             'published_at': self.published_at.isoformat() if self.published_at else None,
             'tags': self.tags.split(',') if self.tags else [],
+            'read_time': self.read_time,
             'created_at': self.created_at.isoformat() if self.created_at else None,
             'updated_at': self.updated_at.isoformat() if self.updated_at else None
         }
