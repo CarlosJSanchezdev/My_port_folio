@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  apiUrl: 'https://your-backend-url.com/api' // TODO: Update with actual production URL
+  apiUrl: 'https://my-port-folio-n6vb.onrender.com/api' // TODO: Update with actual production URL
 };
