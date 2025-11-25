@@ -66,11 +66,11 @@ export class ApiService {
   private handleError(error: HttpErrorResponse) {
     let errorMessage = 'An unknown error occurred';
     
-    if (error.error instanceof ErrorEvent) {
-      // Client-side error
-      errorMessage = `Error: ${error.error.message}`;
+    // Server-side error
+    if (error.status === 0) {
+      // Network error or CORS issue
+      errorMessage = 'Network error. Please check your connection.';
     } else {
-      // Server-side error
       errorMessage = `Error Code: ${error.status}\nMessage: ${error.message}`;
       
       if (error.error && error.error.error) {
