@@ -26,7 +26,7 @@ export class ContactService {
    * Send a contact message
    */
   sendMessage(message: ContactMessage): Observable<ContactResponse> {
-    return this.api.post<ContactResponse>('contact', message);
+    return this.api.post<ContactResponse>('contact/', message);
   }
 
   /**
