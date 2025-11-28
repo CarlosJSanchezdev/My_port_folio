@@ -33,7 +33,7 @@ export class ProjectsService {
    * Get all projects
    */
   getProjects(category?: string, featured?: boolean): Observable<Project[]> {
-    let endpoint = 'projects';
+    let endpoint = 'projects/';
     const params: string[] = [];
     
     if (category) {
