@@ -29,8 +29,8 @@
     </nav>
 
     <!-- CTA Button -->
-    <div class="header-actions">
-      <a href="/assets/cv_cjs.pdf" target="_blank" class="btn btn-primary btn-sm">
+    <div class="header-actions" *ngIf="accessLevel >= 3">
+      <a [href]="cvUrl" target="_blank" class="btn btn-primary btn-sm">
         Download CV
       </a>
     </div>
@@ -61,7 +61,7 @@
       <span class="nav-icon">📧</span>
       <span>Contact</span>
     </a>
-    <a href="/assets/cv_cjs.pdf" target="_blank" class="mobile-nav-link mobile-cta">
+    <a *ngIf="accessLevel >= 3" [href]="cvUrl" target="_blank" class="mobile-nav-link mobile-cta">
       Download CV
     </a>
   </nav>

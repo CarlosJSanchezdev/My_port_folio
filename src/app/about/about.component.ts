@@ -1,6 +1,8 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { RouterModule } from '@angular/router';
+import { AuthService } from '../services/auth.service';
+import { environment } from '../../environments/environment';
 
 import { PERSONAL_INFO, SKILLS } from '../config/portfolio.config';
 
@@ -22,8 +24,10 @@ interface SkillCategory {
   templateUrl: './about.component.html',
   styleUrls: ['./about.component.css']
 })
-export class AboutComponent {
+export class AboutComponent implements OnInit {
   stats = PERSONAL_INFO.stats;
+  accessLevel = 1;
+  cvUrl = `${environment.apiUrl}/protected/cv`;
 
   skillCategories: SkillCategory[] = [
     {
@@ -43,4 +47,16 @@ export class AboutComponent {
       skills: SKILLS.tools
     }
   ];
+
+  constructor(
+    private authService: AuthService,
+    private cdr: ChangeDetectorRef
+  ) {}
+
+  ngOnInit() {
+    this.authService.authStatus$.subscribe(status => {
+      this.accessLevel = Number(status.access_level);
+      this.cdr.detectChanges();
+    });
+  }
 }

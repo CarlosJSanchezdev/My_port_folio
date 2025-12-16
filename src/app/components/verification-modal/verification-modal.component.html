@@ -1,0 +1,38 @@
+<div class="modal-overlay" *ngIf="isOpen" (click)="close()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+        <button class="close-btn" (click)="close()" aria-label="Cerrar">✕</button>
+
+        <div class="modal-header">
+            <div class="icon-container">
+                <span class="icon">📧</span>
+            </div>
+            <h2>Verifica tu Email</h2>
+            <p>Hemos enviado un código de 6 dígitos a <br><strong>{{ email }}</strong></p>
+        </div>
+
+        <div class="code-input-container">
+            <input type="text" [(ngModel)]="code" maxlength="6" placeholder="000000" class="code-input"
+                (input)="onCodeInput()" [disabled]="isVerifying" autofocus />
+            <div class="input-hint">Ingresa el código de 6 dígitos</div>
+        </div>
+
+        <div class="timer" *ngIf="timeRemaining > 0">
+            ⏱️ El código expira en {{ formatTime(timeRemaining) }}
+        </div>
+
+        <div class="error-message" *ngIf="errorMessage">
+            {{ errorMessage }}
+        </div>
+
+        <div class="actions">
+            <button class="verify-btn" (click)="verify()" [disabled]="code.length !== 6 || isVerifying">
+                <span *ngIf="!isVerifying">✅ Verificar Código</span>
+                <span *ngIf="isVerifying">⏳ Verificando...</span>
+            </button>
+
+            <button class="resend-btn" (click)="resendCode()" [disabled]="!canResend" [class.disabled]="!canResend">
+                🔄 Reenviar código {{ !canResend ? '(' + resendTimer + 's)' : '' }}
+            </button>
+        </div>
+    </div>
+</div>

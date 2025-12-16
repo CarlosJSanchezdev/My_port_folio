@@ -2,6 +2,8 @@ from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_cors import CORS
+from flask_mail import Mail
+from flask_session import Session
 from app.config import Config
 import logging
 from collections import defaultdict
@@ -10,22 +12,26 @@ from datetime import datetime, timedelta
 # Inicializar extensiones
 db = SQLAlchemy()
 migrate = Migrate()
+mail = Mail()
+sess = Session()
 
 # Configuración del logger para seguridad 
 security_logger = logging.getLogger('security')
 
-def create_app():
+def create_app(config_class=Config):
     """Factory function para crear la aplicación Flask"""
 
     # Crear la instancia de Flask
     app = Flask(__name__)
 
     # Cargar la configuración 
-    app.config.from_object(Config)
+    app.config.from_object(config_class)
 
     # Inicializar extensiones con la app
     db.init_app(app)
     migrate.init_app(app, db)
+    mail.init_app(app)
+    sess.init_app(app)
 
     # Configuración de CORS
     CORS(app, resources={
@@ -38,7 +44,7 @@ def create_app():
             ],
             "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
             "allow_headers": ["Content-Type", "Authorization", "Accept"],
-            "supports_credentials": False
+            "supports_credentials": True  # Necesario para sesiones
         }
     })
 
@@ -147,8 +153,12 @@ def register_blueprints(app):
     from app.routes.projects import bp as projects_bp
     from app.routes.blog import bp as blog_bp
     from app.routes.contact import bp as contact_bp
+    from app.routes.auth import bp as auth_bp
+    from app.routes.protected import bp as protected_bp
 
     # Registrar blueprints
     app.register_blueprint(projects_bp, url_prefix='/api/projects')
     app.register_blueprint(blog_bp, url_prefix='/api/blog')
     app.register_blueprint(contact_bp, url_prefix='/api/contact')
+    app.register_blueprint(auth_bp, url_prefix='/api/auth')
+    app.register_blueprint(protected_bp, url_prefix='/api/protected')

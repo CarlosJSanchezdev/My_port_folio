@@ -42,11 +42,7 @@ testem.log
 Thumbs.db
 
 # Backend (Flask/Python)
-backend/.env
-backend/.venv
-backend/venv
 backend/instance/
-backend/logs/
 backend/__pycache__/
 backend/**/*.pyc
 __pycache__/
@@ -59,3 +55,17 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+backend/.venv/
+backend/venv/
+
+# Local Env
+.env.local
+backend/.env.local
+
+# Logs
+*.log
+backend/logs/
+
+# Flask Session
+flask_session/
+backend/flask_session/
