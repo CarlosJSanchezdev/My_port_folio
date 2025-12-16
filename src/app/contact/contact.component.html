@@ -15,65 +15,54 @@
     <div class="content-container">
       <!-- Contact Info -->
       <div class="contact-info">
-        <h2 class="section-title">Información de Contacto</h2>
-        <p class="info-description">
-          Estoy disponible para proyectos freelance, colaboraciones o simplemente
-          para charlar sobre tecnología y desarrollo.
-        </p>
+        <!-- Unified Info Card -->
+        <div class="info-section-card">
+          <h2 class="section-title">Información de Contacto</h2>
 
-        <div class="info-cards">
-          <div class="info-card">
-            <div class="info-icon">📧</div>
-            <div class="info-content">
-              <h3>Email</h3>
-              <a href="mailto:cjsatlas@hotmail.com">cjsatlas&#64;hotmail.com</a>
+          <p class="info-description">
+            Estoy disponible para proyectos freelance, colaboraciones o simplemente
+            para charlar sobre tecnología y desarrollo.
+          </p>
+
+          <!-- Dynamic Info Cards -->
+          <div class="info-cards">
+            <div class="info-card" *ngFor="let info of ownerInfo">
+              <div class="info-icon">{{ info.icon }}</div>
+              <div class="info-content">
+                <h3>{{ info.label }}</h3>
+
+                <!-- Email Link -->
+                <a *ngIf="info.type === 'email'" [href]="'mailto:' + info.value">{{ info.value }}</a>
+
+                <!-- Phone/WhatsApp Link -->
+                <a *ngIf="info.type === 'phone' || info.type === 'whatsapp'" [href]="'tel:' + info.value">{{ info.value
+                  }}</a>
+
+                <!-- Link -->
+                <a *ngIf="info.type === 'link' || info.type === 'linkedin' || info.type === 'github'"
+                  [href]="info.value" target="_blank">{{ info.value }}</a>
+
+                <!-- Text -->
+                <p *ngIf="info.type === 'text' || info.type === 'location' || info.type === 'hours'">{{ info.value }}
+                </p>
+
+                <!-- File Download -->
+                <a *ngIf="info.type === 'file'" [href]="info.value" download class="download-link">⬇️ Descargar</a>
+              </div>
             </div>
           </div>
 
-          <div class="info-card">
-            <div class="info-icon">📱</div>
-            <div class="info-content">
-              <h3>Teléfono</h3>
-              <a href="tel:+573176913321">+57 317 691 3321</a>
-            </div>
-          </div>
-
-          <div class="info-card">
-            <div class="info-icon">📍</div>
-            <div class="info-content">
-              <h3>Ubicación</h3>
-              <p>Santiago de Cali, Colombia</p>
-            </div>
-          </div>
-
-          <div class="info-card">
-            <div class="info-icon">⏰</div>
-            <div class="info-content">
-              <h3>Horario</h3>
-              <p>Lun - Vie: 9:00 AM - 6:00 PM</p>
-            </div>
-          </div>
-        </div>
-
-        <!-- Social Links -->
-        <div class="social-section">
-          <h3>Sígueme en Redes</h3>
-          <div class="social-links">
-            <a href="https://github.com/CarlosJSanchezdev" target="_blank" class="social-btn">
-              <span class="social-icon">💻</span>
-              <span>GitHub</span>
-            </a>
-            <a href="https://www.linkedin.com/in/carlos-sánchez-b9311b32b" target="_blank" class="social-btn">
-              <span class="social-icon">💼</span>
-              <span>LinkedIn</span>
-            </a>
-            <a href="https://twitter.com/carlosjsanchez" target="_blank" class="social-btn">
-              <span class="social-icon">🐦</span>
-              <span>Twitter</span>
-            </a>
+          <!-- Unlock Section (Only for Level 1) -->
+          <div class="unlock-section" *ngIf="accessLevel < 2">
+            <button class="unlock-btn" (click)="openVerificationModal()">
+              🔓 Desbloquear Información Adicional
+            </button>
+            <p class="unlock-hint">Verifica tu email para ver teléfono y horarios</p>
           </div>
         </div>
       </div>
+
+      <!-- Social Links -->
 
       <!-- Contact Form -->
       <div class="contact-form-section">
@@ -150,7 +139,7 @@
           </div>
         </form>
       </div>
-    </div>
+    </div> <!-- Closing content-container -->
   </section>
 
   <!-- FAQ Section -->
@@ -178,3 +167,7 @@
     </div>
   </section>
 </div>
+
+<!-- Verification Modal -->
+<app-verification-modal [isOpen]="isVerificationModalOpen" [email]="verificationEmail" [name]="verificationName"
+  (verified)="onVerified()" (closed)="closeVerificationModal()"></app-verification-modal>

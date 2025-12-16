@@ -53,6 +53,10 @@
   grid-template-columns: 1fr 1.5fr;
   gap: var(--space-3xl);
   align-items: start;
+  position: relative;
+  /* Asegurar contexto de apilamiento */
+  z-index: 10;
+  /* Elevar sobre posibles overlays */
 }
 
 .section-title {
@@ -68,30 +72,55 @@
 .contact-info {
   display: flex;
   flex-direction: column;
-  gap: var(--space-2xl);
+  height: 100%;
+  /* Fill height */
+}
+
+/* Unified Card Style (Matches Form) */
+.info-section-card {
+  background: var(--color-surface);
+  padding: var(--space-2xl);
+  border-radius: var(--radius-2xl);
+  box-shadow: var(--shadow-lg);
+  border: 1px solid var(--color-border);
+  position: relative;
+  z-index: 10;
+  transition: all var(--transition-base);
+  height: 100%;
+  /* Equal height to form */
+  display: flex;
+  flex-direction: column;
+}
+
+.info-section-card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-2xl);
+  border-color: var(--color-primary-light);
 }
 
 .info-description {
   font-size: var(--font-size-base);
   color: var(--color-text-secondary);
   line-height: 1.6;
-  margin: 0;
+  margin: 0 0 var(--space-lg) 0;
 }
 
 .info-cards {
   display: flex;
   flex-direction: column;
-  gap: var(--space-md);
+  gap: var(--space-sm);
 }
 
 .info-card {
   display: flex;
   align-items: center;
   gap: var(--space-md);
-  padding: var(--space-lg);
-  background: var(--color-surface);
-  border-radius: var(--radius-xl);
-  border: 1px solid var(--color-border);
+  padding: var(--space-md);
+  background: var(--color-bg-secondary);
+  /* Lighter background inside card */
+  border-radius: var(--radius-lg);
+  border: 1px solid transparent;
+  /* No border by default */
   transition: all var(--transition-base);
 }
 
@@ -102,14 +131,14 @@
 }
 
 .info-icon {
-  font-size: var(--font-size-3xl);
-  width: 60px;
-  height: 60px;
+  font-size: var(--font-size-xl);
+  width: 44px;
+  height: 44px;
   display: flex;
   align-items: center;
   justify-content: center;
   background: var(--color-bg-tertiary);
-  border-radius: var(--radius-lg);
+  border-radius: var(--radius-md);
   flex-shrink: 0;
 }
 
@@ -191,6 +220,8 @@
   border-radius: var(--radius-2xl);
   box-shadow: var(--shadow-lg);
   border: 1px solid var(--color-border);
+  position: relative;
+  z-index: 10;
 }
 
 .contact-form {
@@ -262,9 +293,14 @@
   margin-top: var(--space-md);
 }
 
+.submit-btn:disabled,
 .submit-btn.loading {
-  opacity: 0.7;
+  opacity: 0.6;
   cursor: not-allowed;
+  background: var(--color-text-secondary);
+  /* Grey out */
+  transform: none !important;
+  box-shadow: none !important;
 }
 
 .form-message {
@@ -434,4 +470,78 @@
     padding: var(--space-md) var(--space-lg);
     font-size: var(--font-size-base);
   }
+}
+
+/* ========================================
+   AUTH & UNLOCK SECTION (NEW)
+   ======================================== */
+.access-level-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--space-xs) var(--space-md);
+  border-radius: var(--radius-full);
+  font-weight: 600;
+  font-size: var(--font-size-sm);
+  margin-bottom: var(--space-lg);
+}
+
+.level-1 {
+  background: var(--color-bg-tertiary);
+  color: var(--color-text-secondary);
+}
+
+.level-2 {
+  background: rgba(16, 185, 129, 0.1);
+  color: var(--color-success);
+  border: 1px solid var(--color-success);
+}
+
+.level-3 {
+  background: rgba(245, 158, 11, 0.1);
+  color: var(--color-warning);
+  border: 1px solid var(--color-warning);
+}
+
+.unlock-section {
+  background: var(--color-bg-tertiary);
+  padding: var(--space-lg);
+  border-radius: var(--radius-lg);
+  border: 1px dashed var(--color-border);
+  margin-top: var(--space-xl);
+  text-align: center;
+}
+
+.unlock-btn {
+  background: var(--color-surface);
+  color: var(--color-primary);
+  border: 2px solid var(--color-primary);
+  padding: var(--space-md) var(--space-lg);
+  border-radius: var(--radius-lg);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-base);
+  margin-bottom: var(--space-sm);
+}
+
+.unlock-btn:hover {
+  background: var(--color-primary);
+  color: var(--color-text-inverse);
+}
+
+.unlock-hint {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  margin: 0;
+}
+
+.download-link {
+  display: inline-block;
+  margin-top: var(--space-xs);
+  color: var(--color-primary);
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.download-link:hover {
+  text-decoration: underline;
 }

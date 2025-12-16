@@ -7,43 +7,58 @@
    CSS VARIABLES - DESIGN SYSTEM
    ======================================== */
 :root {
-  /* Colors - Primary Palette */
-  --color-primary: #6366f1;
-  --color-primary-light: #818cf8;
-  --color-primary-dark: #4f46e5;
-  --color-secondary: #ec4899;
-  --color-accent: #14b8a6;
-  
-  /* Neutral Colors - Light Theme */
+  /* Colors - Immersive Nature Palette */
+  --color-primary: #677365;
+  /* Sage Green Dark - Base */
+  --color-primary-light: #96A694;
+  /* Sage Medium - Accents */
+  --color-primary-dark: #50594F;
+  /* Deep Moss - Hover/Active */
+  --color-secondary: #B0BFAE;
+  /* Sage Light - Surfaces */
+  --color-accent: #262620;
+  /* Black Olive - Contrast */
+
+  /* Neutral Colors - Warm/Organic Theme */
   --color-bg-primary: #ffffff;
-  --color-bg-secondary: #f8fafc;
-  --color-bg-tertiary: #f1f5f9;
+  --color-bg-secondary: #f4f6f4;
+  /* Very Light Sage Tint */
+  --color-bg-tertiary: #e9ece9;
+  /* Light Sage Tint for cards */
   --color-surface: #ffffff;
   --color-surface-elevated: #ffffff;
-  
-  /* Text Colors - Light Theme */
-  --color-text-primary: #0f172a;
-  --color-text-secondary: #475569;
-  --color-text-tertiary: #64748b;
+
+  /* Text Colors */
+  --color-text-primary: #262620;
+  /* Black Olive - Rich Dark for reading */
+  --color-text-secondary: #50594F;
+  /* Deep Moss - Muted text */
+  --color-text-tertiary: #677365;
+  /* Sage Green - Subtle text */
   --color-text-inverse: #ffffff;
-  
+
   /* Border & Divider */
-  --color-border: #e2e8f0;
-  --color-divider: #cbd5e1;
-  
-  /* Status Colors */
-  --color-success: #10b981;
-  --color-warning: #f59e0b;
-  --color-error: #ef4444;
-  --color-info: #3b82f6;
-  
-  /* Gradients */
-  --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  --gradient-secondary: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-  --gradient-accent: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-  --gradient-dark: linear-gradient(135deg, #1e293b 0%, #334155 100%);
-  --gradient-hero: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
-  
+  --color-border: #B0BFAE;
+  /* Sage Light - Organic borders */
+  --color-divider: #e2e8f0;
+
+  /* Status Colors (Adjusted to match softness) */
+  --color-success: #677365;
+  /* Using Primary Sage for success */
+  --color-warning: #d97706;
+  /* Warm Amber */
+  --color-error: #b91c1c;
+  /* Deep Red */
+  --color-info: #50594F;
+  /* Deep Moss */
+
+  /* Gradients - Organic & Smooth */
+  --gradient-primary: linear-gradient(135deg, #677365 0%, #50594F 100%);
+  --gradient-secondary: linear-gradient(135deg, #96A694 0%, #B0BFAE 100%);
+  --gradient-accent: linear-gradient(135deg, #262620 0%, #50594F 100%);
+  --gradient-dark: linear-gradient(135deg, #1a1a16 0%, #262620 100%);
+  --gradient-hero: linear-gradient(135deg, #50594F 0%, #677365 50%, #96A694 100%);
+
   /* Spacing Scale */
   --space-xs: 0.25rem;
   --space-sm: 0.5rem;
@@ -52,11 +67,11 @@
   --space-xl: 2rem;
   --space-2xl: 3rem;
   --space-3xl: 4rem;
-  
+
   /* Typography */
   --font-primary: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   --font-heading: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  
+
   --font-size-xs: 0.75rem;
   --font-size-sm: 0.875rem;
   --font-size-base: 1rem;
@@ -66,7 +81,7 @@
   --font-size-3xl: 1.875rem;
   --font-size-4xl: 2.25rem;
   --font-size-5xl: 3rem;
-  
+
   /* Border Radius */
   --radius-sm: 0.375rem;
   --radius-md: 0.5rem;
@@ -74,20 +89,21 @@
   --radius-xl: 1rem;
   --radius-2xl: 1.5rem;
   --radius-full: 9999px;
-  
-  /* Shadows */
-  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-  --shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-  --shadow-glow: 0 0 20px rgba(99, 102, 241, 0.3);
-  
+
+  /* Shadows - Organic Soft Shadows */
+  --shadow-sm: 0 1px 2px 0 rgba(38, 38, 32, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(38, 38, 32, 0.1), 0 2px 4px -1px rgba(38, 38, 32, 0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(38, 38, 32, 0.1), 0 4px 6px -2px rgba(38, 38, 32, 0.05);
+  --shadow-xl: 0 20px 25px -5px rgba(38, 38, 32, 0.1), 0 10px 10px -5px rgba(38, 38, 32, 0.04);
+  --shadow-2xl: 0 25px 50px -12px rgba(38, 38, 32, 0.25);
+  --shadow-glow: 0 0 20px rgba(103, 115, 101, 0.3);
+  /* Soft Sage Glow */
+
   /* Transitions */
   --transition-fast: 150ms ease-in-out;
   --transition-base: 250ms ease-in-out;
   --transition-slow: 350ms ease-in-out;
-  
+
   /* Z-index Scale */
   --z-dropdown: 1000;
   --z-sticky: 1020;
@@ -105,15 +121,15 @@
   --color-bg-tertiary: #334155;
   --color-surface: #1e293b;
   --color-surface-elevated: #334155;
-  
+
   --color-text-primary: #f8fafc;
   --color-text-secondary: #cbd5e1;
   --color-text-tertiary: #94a3b8;
   --color-text-inverse: #0f172a;
-  
+
   --color-border: #334155;
   --color-divider: #475569;
-  
+
   --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
   --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -1px rgba(0, 0, 0, 0.3);
   --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.4), 0 4px 6px -2px rgba(0, 0, 0, 0.3);
@@ -124,7 +140,9 @@
 /* ========================================
    BASE STYLES
    ======================================== */
-*, *::before, *::after {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
@@ -152,7 +170,12 @@ body {
 /* ========================================
    TYPOGRAPHY
    ======================================== */
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   font-family: var(--font-heading);
   font-weight: 700;
   line-height: 1.2;
@@ -160,12 +183,29 @@ h1, h2, h3, h4, h5, h6 {
   margin-bottom: var(--space-md);
 }
 
-h1 { font-size: var(--font-size-5xl); }
-h2 { font-size: var(--font-size-4xl); }
-h3 { font-size: var(--font-size-3xl); }
-h4 { font-size: var(--font-size-2xl); }
-h5 { font-size: var(--font-size-xl); }
-h6 { font-size: var(--font-size-lg); }
+h1 {
+  font-size: var(--font-size-5xl);
+}
+
+h2 {
+  font-size: var(--font-size-4xl);
+}
+
+h3 {
+  font-size: var(--font-size-3xl);
+}
+
+h4 {
+  font-size: var(--font-size-2xl);
+}
+
+h5 {
+  font-size: var(--font-size-xl);
+}
+
+h6 {
+  font-size: var(--font-size-lg);
+}
 
 p {
   margin-bottom: var(--space-md);
@@ -199,7 +239,8 @@ main.container {
   padding: var(--space-xl) var(--space-lg);
 }
 
-app-footer, footer {
+app-footer,
+footer {
   flex-shrink: 0;
 }
 
@@ -222,18 +263,49 @@ app-footer, footer {
   padding: var(--space-3xl) 0;
 }
 
-.text-center { text-align: center; }
-.text-left { text-align: left; }
-.text-right { text-align: right; }
+.text-center {
+  text-align: center;
+}
 
-.flex { display: flex; }
-.flex-col { flex-direction: column; }
-.items-center { align-items: center; }
-.justify-center { justify-content: center; }
-.justify-between { justify-content: space-between; }
-.gap-sm { gap: var(--space-sm); }
-.gap-md { gap: var(--space-md); }
-.gap-lg { gap: var(--space-lg); }
+.text-left {
+  text-align: left;
+}
+
+.text-right {
+  text-align: right;
+}
+
+.flex {
+  display: flex;
+}
+
+.flex-col {
+  flex-direction: column;
+}
+
+.items-center {
+  align-items: center;
+}
+
+.justify-center {
+  justify-content: center;
+}
+
+.justify-between {
+  justify-content: space-between;
+}
+
+.gap-sm {
+  gap: var(--space-sm);
+}
+
+.gap-md {
+  gap: var(--space-md);
+}
+
+.gap-lg {
+  gap: var(--space-lg);
+}
 
 /* ========================================
    BUTTONS
@@ -323,6 +395,7 @@ app-footer, footer {
     opacity: 0;
     transform: translateY(20px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -334,6 +407,7 @@ app-footer, footer {
     opacity: 0;
     transform: translateX(-30px);
   }
+
   to {
     opacity: 1;
     transform: translateX(0);
@@ -345,6 +419,7 @@ app-footer, footer {
     opacity: 0;
     transform: translateX(30px);
   }
+
   to {
     opacity: 1;
     transform: translateX(0);
@@ -356,6 +431,7 @@ app-footer, footer {
     opacity: 0;
     transform: scale(0.9);
   }
+
   to {
     opacity: 1;
     transform: scale(1);
@@ -363,9 +439,12 @@ app-footer, footer {
 }
 
 @keyframes float {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: translateY(0);
   }
+
   50% {
     transform: translateY(-10px);
   }
@@ -400,7 +479,7 @@ app-footer, footer {
     --font-size-4xl: 2rem;
     --font-size-3xl: 1.75rem;
   }
-  
+
   main.container {
     padding: var(--space-lg) var(--space-md);
   }
@@ -413,11 +492,11 @@ app-footer, footer {
     --font-size-3xl: 1.5rem;
     --space-3xl: 2.5rem;
   }
-  
+
   .container {
     padding: 0 var(--space-md);
   }
-  
+
   main.container {
     padding: var(--space-md);
   }
@@ -427,12 +506,12 @@ app-footer, footer {
   html {
     font-size: 14px;
   }
-  
+
   .btn {
     padding: var(--space-sm) var(--space-lg);
     font-size: var(--font-size-sm);
   }
-  
+
   .card {
     padding: var(--space-lg);
   }

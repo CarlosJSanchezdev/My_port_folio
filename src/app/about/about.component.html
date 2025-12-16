@@ -105,7 +105,7 @@
           proyectos open source y compartir conocimientos con la comunidad de desarrolladores.
         </p>
         <div class="about-me-actions">
-          <a href="/assets/cv_cjs.pdf" target="_blank" class="btn btn-primary">
+          <a *ngIf="accessLevel >= 3" [href]="cvUrl" target="_blank" class="btn btn-primary">
             📄 Descargar CV
           </a>
           <a href="https://github.com/CarlosJSanchezdev" target="_blank" class="btn btn-secondary">
