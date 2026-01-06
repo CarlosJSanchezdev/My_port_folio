@@ -21,7 +21,7 @@ Cuando no estoy programando, me gusta aprender nuevas tecnologías, contribuir a
   stats: {
     experience: '1',
     projects: 1,
-    technologies: 20,
+    technologies: 10,
     satisfaction: 100
   },
   
@@ -61,11 +61,11 @@ export const SKILLS = {
   mobile: [
     { name: 'React Native', icon: '📱', level: 75 },
     { name: 'Expo', icon: '🚀', level: 80 },
-    { name: 'iOS/Android', icon: '📲', level: 70 }
+    //{ name: 'iOS/Android', icon: '📲', level: 70 }
   ],
   tools: [
     { name: 'Git', icon: '🔧', level: 90 },
-    { name: 'Docker', icon: '🐳', level: 70 },
+    //{ name: 'Docker', icon: '🐳', level: 70 },
     { name: 'Supabase', icon: '⚡', level: 75 },
     { name: 'Firebase', icon: '🔥', level: 75 },
     { name: 'REST APIs', icon: '🌐', level: 90 }
