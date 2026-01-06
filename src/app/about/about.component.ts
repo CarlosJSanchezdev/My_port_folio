@@ -1,5 +1,5 @@
-import { CommonModule } from '@angular/common';
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { Component, OnInit, ChangeDetectorRef, Inject, PLATFORM_ID } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { AuthService } from '../services/auth.service';
 import { environment } from '../../environments/environment';
@@ -50,13 +50,16 @@ export class AboutComponent implements OnInit {
 
   constructor(
     private authService: AuthService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    @Inject(PLATFORM_ID) private platformId: Object
   ) {}
 
   ngOnInit() {
-    this.authService.authStatus$.subscribe(status => {
-      this.accessLevel = Number(status.access_level);
-      this.cdr.detectChanges();
-    });
+    if (isPlatformBrowser(this.platformId)) {
+      this.authService.authStatus$.subscribe(status => {
+        this.accessLevel = Number(status.access_level);
+        this.cdr.detectChanges();
+      });
+    }
   }
 }
