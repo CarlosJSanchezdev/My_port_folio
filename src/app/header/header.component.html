@@ -12,11 +12,11 @@
     <nav class="header-nav">
       <a routerLink="/about" routerLinkActive="active" class="nav-link">
         <span class="nav-icon">👋</span>
-        <span>About</span>
+        <span>Sobre Mí</span>
       </a>
       <a routerLink="/projects" routerLinkActive="active" class="nav-link">
         <span class="nav-icon">💼</span>
-        <span>Projects</span>
+        <span>Proyectos</span>
       </a>
       <a routerLink="/blog" routerLinkActive="active" class="nav-link">
         <span class="nav-icon">📝</span>
@@ -24,19 +24,19 @@
       </a>
       <a routerLink="/contact" routerLinkActive="active" class="nav-link">
         <span class="nav-icon">📧</span>
-        <span>Contact</span>
+        <span>Contacto</span>
       </a>
     </nav>
 
     <!-- CTA Button -->
     <div class="header-actions" *ngIf="accessLevel >= 3">
       <a [href]="cvUrl" target="_blank" class="btn btn-primary btn-sm">
-        Download CV
+        Descargar CV
       </a>
     </div>
 
     <!-- Mobile Menu Toggle -->
-    <button class="mobile-menu-toggle" (click)="toggleMobileMenu()" aria-label="Toggle menu">
+    <button class="mobile-menu-toggle" (click)="toggleMobileMenu()" aria-label="Alternar menú">
       <span class="hamburger-line"></span>
       <span class="hamburger-line"></span>
       <span class="hamburger-line"></span>
@@ -47,11 +47,11 @@
   <nav class="mobile-nav" [class.active]="mobileMenuOpen">
     <a routerLink="/about" routerLinkActive="active" class="mobile-nav-link" (click)="closeMobileMenu()">
       <span class="nav-icon">👋</span>
-      <span>About</span>
+      <span>Sobre Mí</span>
     </a>
     <a routerLink="/projects" routerLinkActive="active" class="mobile-nav-link" (click)="closeMobileMenu()">
       <span class="nav-icon">💼</span>
-      <span>Projects</span>
+      <span>Proyectos</span>
     </a>
     <a routerLink="/blog" routerLinkActive="active" class="mobile-nav-link" (click)="closeMobileMenu()">
       <span class="nav-icon">📝</span>
@@ -59,10 +59,10 @@
     </a>
     <a routerLink="/contact" routerLinkActive="active" class="mobile-nav-link" (click)="closeMobileMenu()">
       <span class="nav-icon">📧</span>
-      <span>Contact</span>
+      <span>Contacto</span>
     </a>
     <a *ngIf="accessLevel >= 3" [href]="cvUrl" target="_blank" class="mobile-nav-link mobile-cta">
-      Download CV
+      Descargar CV
     </a>
   </nav>
 </header>
