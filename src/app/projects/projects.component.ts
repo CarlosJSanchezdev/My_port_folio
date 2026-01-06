@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, OnInit, Inject, PLATFORM_ID } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { ProjectsService, Project } from '../services/projects.service';
 import { PROJECTS } from '../config/portfolio.config';
 
@@ -21,10 +21,20 @@ export class ProjectsComponent implements OnInit {
   error: string | null = null;
   useStaticData: boolean = false;
 
-  constructor(private projectsService: ProjectsService) {}
+  constructor(
+    private projectsService: ProjectsService,
+    @Inject(PLATFORM_ID) private platformId: Object
+  ) {}
 
   ngOnInit() {
-    this.loadProjects();
+    if (isPlatformBrowser(this.platformId)) {
+      this.loadProjects();
+    } else {
+      // Server side: use static data directly
+      this.projects = PROJECTS as any;
+      this.filterProjects('all');
+      this.isLoading = false;
+    }
   }
 
   /**

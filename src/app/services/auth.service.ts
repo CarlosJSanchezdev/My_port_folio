@@ -1,5 +1,6 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Inject, PLATFORM_ID } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
@@ -32,8 +33,13 @@ export class AuthService {
   
   public authStatus$ = this.authStatusSubject.asObservable();
 
-  constructor(private http: HttpClient) {
-    this.checkAuthStatus();
+  constructor(
+    private http: HttpClient,
+    @Inject(PLATFORM_ID) private platformId: Object
+  ) {
+    if (isPlatformBrowser(this.platformId)) {
+      this.checkAuthStatus();
+    }
   }
 
   checkAuthStatus(): void {

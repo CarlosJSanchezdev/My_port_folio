@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, OnInit, Inject, PLATFORM_ID } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ContactService } from '../services/contact.service';
 import { AuthService, OwnerInfo } from '../services/auth.service';
@@ -29,7 +29,8 @@ export class ContactComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private contactService: ContactService,
-    private authService: AuthService
+    private authService: AuthService,
+    @Inject(PLATFORM_ID) private platformId: Object
   ) {
     this.contactForm = this.fb.group({
       name: ['', [Validators.required, Validators.minLength(2)]],
@@ -40,11 +41,13 @@ export class ContactComponent implements OnInit {
   }
 
   ngOnInit() {
-    // Suscribirse a cambios de estado de autenticación
-    this.authService.authStatus$.subscribe(status => {
-      this.accessLevel = status.access_level;
-      this.loadOwnerInfo();
-    });
+    if (isPlatformBrowser(this.platformId)) {
+      // Suscribirse a cambios de estado de autenticación
+      this.authService.authStatus$.subscribe(status => {
+        this.accessLevel = status.access_level;
+        this.loadOwnerInfo();
+      });
+    }
   }
 
   loadOwnerInfo() {
