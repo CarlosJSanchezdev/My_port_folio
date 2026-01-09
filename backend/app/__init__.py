@@ -43,7 +43,7 @@ def create_app(config_class=Config):
                 "https://127.0.0.1:4200",
                 "http://localhost:4000",
                 "http://127.0.0.1:4000",
-                "https://my-port-folio-cjs.vercel.app"
+                "https://carlosjsanchezdev.vercel.app"
             ],
             "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
             "allow_headers": ["Content-Type", "Authorization", "Accept"],
