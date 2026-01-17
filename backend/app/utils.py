@@ -1,8 +1,7 @@
 import os
-from flask_mail import Mail, Message
+from flask_mail import Message
 from flask import current_app
-
-mail = Mail()
+from app import mail
 
 def send_verification_email(email, name, code):
     """Envía email con código de verificación"""
