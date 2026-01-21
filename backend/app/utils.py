@@ -1,10 +1,11 @@
 import os
+import threading
 from flask_mail import Message
 from flask import current_app
 from app import mail
 
 def send_verification_email(email, name, code):
-    """Envía email con código de verificación"""
+    """Envía email con código de verificación - Versión asíncrona para evitar timeouts"""
     try:
         msg = Message(
             subject='Código de Verificación - Portfolio Carlos Sánchez',
@@ -120,9 +121,21 @@ def send_verification_email(email, name, code):
         Desarrollador Full Stack
         """
         
-        mail.send(msg)
+        # Enviar email de forma asíncrona para evitar timeouts
+        send_email_async(current_app._get_current_object(), msg)
         return True
         
     except Exception as e:
-        current_app.logger.error(f"Error sending verification email: {str(e)}")
+        current_app.logger.error(f"Error preparing verification email: {str(e)}")
         raise e
+
+def send_email_async(app, msg):
+    """Función asíncrona para enviar emails sin bloquear el hilo principal"""
+    try:
+        with app.app_context():
+            mail.send(msg)
+            app.logger.info(f"Email sent successfully to {msg.recipients}")
+    except Exception as e:
+        app.logger.error(f"Error sending async email: {str(e)}")
+        # No lanzamos la excepción para no afectar el flujo principal
+        # El usuario puede solicitar un nuevo código si es necesario

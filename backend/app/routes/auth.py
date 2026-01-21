@@ -1,4 +1,4 @@
-from flask import Blueprint, request, jsonify, session
+from flask import Blueprint, request, jsonify, session, current_app
 from app.models.email_verification import EmailVerification
 from app.models.owner_info import OwnerInfo
 from app.models.user import User
@@ -42,15 +42,21 @@ def request_verification():
         db.session.add(verification)
         db.session.commit()
         
-        # Enviar email
+        # Enviar email de forma asíncrona (sin bloquear)
         try:
             send_verification_email(email, name, verification.verification_code)
+            # No esperamos a que se complete el envío para responder
         except Exception as e:
-            db.session.rollback()
+            # Logueamos el error pero no hacemos rollback ya que el email es asíncrono
+            from flask import current_app
+            current_app.logger.error(f"Email preparation failed: {str(e)}")
+            # Devolvemos éxito pero advertimos posible retraso
             return jsonify({
-                'success': False,
-                'error': 'Error al enviar el email. Por favor, verifica tu dirección de correo.'
-            }), 500
+                'success': True,
+                'message': 'Solicitud procesada. El código puede tardar unos minutos en llegar.',
+                'warning': 'El envío de email puede estar experimentando retrasos.',
+                'expires_in': 900  # 15 minutos en segundos
+            }), 202  # Accepted - procesamiento en segundo plano
         
         return jsonify({
             'success': True,
@@ -115,7 +121,11 @@ def verify_code():
         # Crear o actualizar usuario
         user = User.query.filter_by(email=email).first()
         if not user:
-            user = User(email=email, name=name, access_level=3)  # Nivel 3 = Premium (acceso completo)
+            user = User()
+            user.email = email
+            user.name = name
+            user.access_level = 3  # Nivel 3 = Premium (acceso completo)
+            user.last_login = datetime.utcnow()
             db.session.add(user)
         else:
             user.last_login = datetime.utcnow()

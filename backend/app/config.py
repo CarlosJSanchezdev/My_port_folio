@@ -34,7 +34,11 @@ class Config:
     MAIL_USE_SSL = os.getenv('MAIL_USE_SSL', 'false').lower() == 'true'
     MAIL_USERNAME = os.getenv('MAIL_USERNAME')
     MAIL_PASSWORD = os.getenv('MAIL_PASSWORD')
-    MAIL_DEFAULT_SENDER = os.getenv('MAIL_DEFAULT_SENDER', 'Cafefincasanrafael@gmail.com')
+    MAIL_DEFAULT_SENDER = os.getenv('MAIL_DEFAULT_SENDER', 'cafefincasanrafael@gmail.com')
+    
+    # Timeout configurations for production reliability
+    MAIL_TIMEOUT = int(os.getenv('MAIL_TIMEOUT', 10))  # 10 segundos timeout
+    MAIL_ASCII_ATTACHMENTS = True  # Para mejor compatibilidad
     
     # Session configuration
     SESSION_TYPE = 'filesystem'
