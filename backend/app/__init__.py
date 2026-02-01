@@ -43,7 +43,7 @@ def create_app(config_class=Config):
                 "https://127.0.0.1:4200",
                 "http://localhost:4000",
                 "http://127.0.0.1:4000",
-                "https://carlosjsanchezdev.vercel.app"
+                "https://carlosjsanchezdev.vercel.app",
                 "https://my-port-folio-n6vb.onrender.com"
             ],
             "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
