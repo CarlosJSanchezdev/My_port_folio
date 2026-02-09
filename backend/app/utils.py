@@ -1,8 +1,47 @@
 import os
 import threading
+import time
 from flask_mail import Message
 from flask import current_app
 from app import mail
+from datetime import datetime, timedelta
+
+MAX_RETRIES = 3
+RETRY_DELAY = 2  # segundos
+RATE_LIMIT_WINDOW = 3600  # 1 hora en segundos
+MAX_EMAIL_REQUESTS = 3  # máximo de solicitudes por hora
+
+def check_email_rate_limit(email):
+    """
+    Verifica rate limiting para solicitudes de verificación por email.
+    Retorna (allowed: bool, remaining: int, retry_after: int)
+    """
+    from app import email_request_cache
+    
+    now = datetime.utcnow()
+    
+    # Limpiar solicitudes antiguas para este email
+    if email in email_request_cache:
+        email_request_cache[email] = [
+            timestamp for timestamp in email_request_cache[email]
+            if (now - timestamp).total_seconds() < RATE_LIMIT_WINDOW
+        ]
+    else:
+        email_request_cache[email] = []
+    
+    current_requests = len(email_request_cache[email])
+    
+    if current_requests >= MAX_EMAIL_REQUESTS:
+        # Calcular tiempo de espera hasta la solicitud más antigua
+        oldest_request = email_request_cache[email][0]
+        retry_after = int((oldest_request + timedelta(seconds=RATE_LIMIT_WINDOW) - now).total_seconds())
+        return False, 0, max(retry_after, 1)
+    
+    # Registrar esta nueva solicitud
+    email_request_cache[email].append(now)
+    remaining = MAX_EMAIL_REQUESTS - current_requests - 1
+    
+    return True, remaining, 0
 
 def send_verification_email(email, name, code):
     """Envía email con código de verificación - Versión asíncrona para evitar timeouts"""
@@ -121,6 +160,7 @@ def send_verification_email(email, name, code):
         Desarrollador Full Stack
         """
         
+        
         # Enviar email de forma asíncrona para evitar timeouts
         send_email_async(current_app._get_current_object(), msg)
         return True
@@ -131,11 +171,21 @@ def send_verification_email(email, name, code):
 
 def send_email_async(app, msg):
     """Función asíncrona para enviar emails sin bloquear el hilo principal"""
-    try:
-        with app.app_context():
-            mail.send(msg)
-            app.logger.info(f"Email sent successfully to {msg.recipients}")
-    except Exception as e:
-        app.logger.error(f"Error sending async email: {str(e)}")
-        # No lanzamos la excepción para no afectar el flujo principal
-        # El usuario puede solicitar un nuevo código si es necesario
+    def send_with_retry():
+        for attempt in range(MAX_RETRIES):
+            try:
+                with app.app_context():
+                    mail.send(msg)
+                    app.logger.info(f"Email sent successfully to {msg.recipients} (attempt {attempt + 1})")
+                    return True
+            except Exception as e:
+                app.logger.warning(f"Email send attempt {attempt + 1} failed for {msg.recipients}: {str(e)}")
+                if attempt < MAX_RETRIES - 1:
+                    time.sleep(RETRY_DELAY)
+                else:
+                    app.logger.error(f"Failed to send email after {MAX_RETRIES} attempts to {msg.recipients}: {str(e)}")
+                    return False
+    
+    # Crear y iniciar thread daemon para no bloquear
+    thread = threading.Thread(target=send_with_retry, daemon=True)
+    thread.start()
