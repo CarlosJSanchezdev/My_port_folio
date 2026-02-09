@@ -3,7 +3,7 @@ from app.models.email_verification import EmailVerification
 from app.models.owner_info import OwnerInfo
 from app.models.user import User
 from app import db
-from app.utils import send_verification_email
+from app.utils import send_verification_email, check_email_rate_limit
 from datetime import datetime, timedelta
 import re
 
@@ -24,17 +24,13 @@ def request_verification():
                 'error': 'Email inválido'
             }), 400
         
-        # Verificar rate limiting (máximo 3 intentos por hora)
-        one_hour_ago = datetime.utcnow() - timedelta(hours=1)
-        recent_attempts = EmailVerification.query.filter(
-            EmailVerification.email == email,
-            EmailVerification.created_at > one_hour_ago
-        ).count()
+        # Verificar rate limiting usando caché en memoria (sin queries a BD)
+        allowed, remaining, retry_after = check_email_rate_limit(email)
         
-        if recent_attempts >= 3:
+        if not allowed:
             return jsonify({
                 'success': False,
-                'error': 'Demasiados intentos. Intenta de nuevo en 1 hora.'
+                'error': f'Demasiados intentos. Intenta de nuevo en {retry_after} segundos.'
             }), 429
         
         # Crear nueva verificación
@@ -48,7 +44,6 @@ def request_verification():
             # No esperamos a que se complete el envío para responder
         except Exception as e:
             # Logueamos el error pero no hacemos rollback ya que el email es asíncrono
-            from flask import current_app
             current_app.logger.error(f"Email preparation failed: {str(e)}")
             # Devolvemos éxito pero advertimos posible retraso
             return jsonify({
@@ -66,9 +61,10 @@ def request_verification():
         
     except Exception as e:
         db.session.rollback()
+        current_app.logger.error(f"Error in request_verification: {str(e)}")
         return jsonify({
             'success': False,
-            'error': str(e)
+            'error': 'Error al procesar la solicitud. Intenta de nuevo más tarde.'
         }), 500
 
 @bp.route('/verify-code', methods=['POST'])
@@ -94,6 +90,7 @@ def verify_code():
         ).order_by(EmailVerification.created_at.desc()).first()
         
         if not verification:
+            current_app.logger.warning(f"Invalid verification code attempt for email: {email}")
             return jsonify({
                 'success': False,
                 'error': 'Código inválido'
@@ -101,6 +98,7 @@ def verify_code():
         
         # Verificar expiración
         if verification.is_expired():
+            current_app.logger.info(f"Expired verification code for email: {email}")
             return jsonify({
                 'success': False,
                 'error': 'Código expirado. Solicita uno nuevo.'
@@ -110,46 +108,60 @@ def verify_code():
         verification.attempts += 1
         
         if verification.attempts > 5:
+            db.session.commit()
+            current_app.logger.warning(f"Too many verification attempts for email: {email}")
             return jsonify({
                 'success': False,
                 'error': 'Demasiados intentos. Solicita un nuevo código.'
-            }), 400
+            }), 429
         
         # Marcar como verificado
         verification.verified = True
         
         # Crear o actualizar usuario
-        user = User.query.filter_by(email=email).first()
-        if not user:
-            user = User()
-            user.email = email
-            user.name = name
-            user.access_level = 3  # Nivel 3 = Premium (acceso completo)
-            user.last_login = datetime.utcnow()
-            db.session.add(user)
-        else:
-            user.last_login = datetime.utcnow()
-            if name and not user.name:
+        try:
+            user = User.query.filter_by(email=email).first()
+            if not user:
+                user = User()
+                user.email = email
                 user.name = name
-        
-        db.session.commit()
-        
-        # Guardar en sesión
-        session['user_id'] = user.id
-        session['access_level'] = user.access_level
-        session['email'] = user.email
-        
-        return jsonify({
-            'success': True,
-            'message': 'Email verificado correctamente',
-            'user': user.to_dict()
-        }), 200
+                user.access_level = 3  # Nivel 3 = Premium (acceso completo)
+                user.last_login = datetime.utcnow()
+                db.session.add(user)
+                current_app.logger.info(f"New user created: {email}")
+            else:
+                user.last_login = datetime.utcnow()
+                if name and not user.name:
+                    user.name = name
+                current_app.logger.info(f"User updated: {email}")
+            
+            db.session.commit()
+            
+            # Guardar en sesión
+            session['user_id'] = user.id
+            session['access_level'] = user.access_level
+            session['email'] = user.email
+            
+            return jsonify({
+                'success': True,
+                'message': 'Email verificado correctamente',
+                'user': user.to_dict()
+            }), 200
+            
+        except Exception as db_error:
+            db.session.rollback()
+            current_app.logger.error(f"Database error in verify_code: {str(db_error)}")
+            return jsonify({
+                'success': False,
+                'error': 'Error al procesar la verificación. Intenta de nuevo más tarde.'
+            }), 500
         
     except Exception as e:
         db.session.rollback()
+        current_app.logger.error(f"Unexpected error in verify_code: {str(e)}")
         return jsonify({
             'success': False,
-            'error': str(e)
+            'error': 'Error inesperado. Por favor intenta de nuevo.'
         }), 500
 
 @bp.route('/owner-info', methods=['GET'])

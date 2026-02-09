@@ -50,4 +50,8 @@ class Config:
     SESSION_COOKIE_DOMAIN = None  # Allow cookies on localhost
     SESSION_COOKIE_NAME = 'portfolio_session'
     PERMANENT_SESSION_LIFETIME = 3600  # 1 hora
-
+    
+    # Logging configuration
+    LOG_LEVEL = os.getenv('LOG_LEVEL', 'INFO')
+    LOG_MAX_BYTES = int(os.getenv('LOG_MAX_BYTES', 10485760))  # 10 MB
+    LOG_BACKUP_COUNT = int(os.getenv('LOG_BACKUP_COUNT', 10))

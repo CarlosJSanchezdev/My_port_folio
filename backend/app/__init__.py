@@ -18,6 +18,8 @@ sess = Session()
 # Configuración del logger para seguridad 
 security_logger = logging.getLogger('security')
 
+# Rate limiter en memoria - caché para evitar queries a BD
+email_request_cache = {}  # {email: [timestamp1, timestamp2, ...]}
 def create_app(config_class=Config):
     """Factory function para crear la aplicación Flask"""
 
