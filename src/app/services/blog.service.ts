@@ -33,7 +33,7 @@ export class BlogService {
    * Get all blog posts
    */
   getPosts(publishedOnly: boolean = true, tag?: string): Observable<BlogPost[]> {
-    let endpoint = 'blog';
+    let endpoint = 'blog/';
     const params: string[] = [];
     
     params.push(`published=${publishedOnly}`);
