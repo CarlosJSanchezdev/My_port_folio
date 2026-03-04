@@ -63,29 +63,77 @@ def seed_local_db():
         print("📝 Creando posts de blog...")
         blog_posts = [
             BlogPost(
-                title="El Futuro del Desarrollo Web con Angular 19",
-                slug="angular-19-futuro-desarrollo-web",
-                content="Angular 19 marca un hito importante en la evolución del framework...",
-                excerpt="Descubre las nuevas características de Angular 19",
-                tags="Angular,Frontend,Web Development",
+                title="Construyendo Aplicaciones Modernas con Angular 19",
+                slug="angular-19-aplicaciones-modernas",
+                content="""Angular 19 trae consigo una serie de mejoras significativas que transforman la forma en que desarrollamos aplicaciones web. En este artículo, exploraremos las características más destacadas y cómo implementarlas en tus proyectos.
+
+**Standalone Components**
+Una de las mejoras más importantes es la consolidación de los componentes standalone, que simplifican la arquitectura de las aplicaciones eliminando la necesidad de módulos NgModule en muchos casos.
+
+**Mejoras en el Rendimiento**
+Angular 19 incluye optimizaciones en el change detection y mejoras en el compilador que resultan en aplicaciones más rápidas y eficientes.
+
+**Server-Side Rendering (SSR)**
+El SSR ha sido mejorado significativamente, ofreciendo mejor rendimiento y una experiencia de desarrollo más fluida.
+
+**Conclusión**
+Angular 19 representa un gran paso adelante en el ecosistema de desarrollo web, ofreciendo herramientas más potentes y una mejor experiencia para los desarrolladores.""",
+                excerpt="Descubre las nuevas características de Angular 19 y cómo aprovecharlas para crear aplicaciones web más rápidas y eficientes.",
+                tags="Angular,TypeScript,Web Development",
                 read_time=5,
                 published=True
             ),
             BlogPost(
-                title="React Native vs Flutter en 2025",
+                title="React Native vs Flutter: ¿Cuál Elegir en 2025?",
                 slug="react-native-vs-flutter-2025",
-                content="La batalla por el desarrollo móvil multiplataforma continúa...",
-                excerpt="Comparativa detallada para tu próximo proyecto móvil",
-                tags="React Native,Flutter,Mobile",
+                content="""El desarrollo móvil multiplataforma ha evolucionado significativamente. Tanto React Native como Flutter ofrecen ventajas únicas. Analicemos cada uno.
+
+**React Native**
+- Basado en JavaScript/TypeScript
+- Gran ecosistema y comunidad
+- Ideal si ya conoces React
+- Excelente para aplicaciones con mucha lógica de negocio
+
+**Flutter**
+- Basado en Dart
+- Rendimiento nativo superior
+- Widgets personalizables
+- Mejor para aplicaciones con UI compleja
+
+**Mi Recomendación**
+Para proyectos con equipos JavaScript existentes, React Native es ideal. Para aplicaciones que requieren UI altamente personalizada y rendimiento óptimo, Flutter es la mejor opción.""",
+                excerpt="Comparativa detallada entre React Native y Flutter para ayudarte a decidir la mejor opción para tu próximo proyecto móvil.",
+                tags="React Native,Flutter,Mobile Development",
                 read_time=7,
                 published=True
             ),
             BlogPost(
-                title="Microservicios con FastAPI y Python",
-                slug="microservicios-fastapi-python",
-                content="FastAPI se ha convertido en el estándar de facto para APIs en Python...",
-                excerpt="Aprende a construir APIs de alto rendimiento",
-                tags="Python,FastAPI,Backend",
+                title="FastAPI: El Framework Python para APIs Modernas",
+                slug="fastapi-framework-python-moderno",
+                content="""FastAPI ha revolucionado el desarrollo de APIs en Python. Su combinación de velocidad, facilidad de uso y características modernas lo hace ideal para proyectos de cualquier escala.
+
+**Características Principales**
+- Validación automática de datos con Pydantic
+- Documentación automática con Swagger/OpenAPI
+- Rendimiento comparable a NodeJS y Go
+- Type hints nativos de Python
+
+**Ventajas sobre Flask**
+Aunque Flask es excelente, FastAPI ofrece:
+- Mejor rendimiento
+- Validación de datos integrada
+- Async/await nativo
+- Documentación automática
+
+**Cuándo Usar FastAPI**
+- APIs REST modernas
+- Microservicios
+- Aplicaciones que requieren alto rendimiento
+- Proyectos que necesitan documentación automática
+
+FastAPI es mi elección para nuevos proyectos backend en Python.""",
+                excerpt="Aprende por qué FastAPI se ha convertido en la opción preferida para construir APIs REST de alto rendimiento con Python.",
+                tags="Python,FastAPI,API Development",
                 read_time=6,
                 published=True
             ),
