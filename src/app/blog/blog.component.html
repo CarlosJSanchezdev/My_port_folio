@@ -27,7 +27,22 @@
     <!-- Articles Grid -->
     <section class="articles-section">
       <div class="articles-container">
-        <div class="articles-grid">
+        <!-- Loading State -->
+        <div class="loading-state" *ngIf="loading">
+          <div class="loading-spinner"></div>
+          <p>Cargando artículos...</p>
+        </div>
+
+        <!-- Error State -->
+        <div class="error-state" *ngIf="error && !loading">
+          <div class="error-icon">⚠️</div>
+          <h3>Error al cargar los artículos</h3>
+          <p>{{ error }}</p>
+          <button class="retry-btn" (click)="loadPosts()">Reintentar</button>
+        </div>
+
+        <!-- Articles -->
+        <div class="articles-grid" *ngIf="!loading && !error">
           <article *ngFor="let article of filteredArticles" class="article-card" (click)="selectArticle(article)">
             <div class="article-image">
               <img [src]="article.image || '/assets/blog/placeholder.png'" [alt]="article.title" class="card-image" />
@@ -52,7 +67,7 @@
         </div>
 
         <!-- Empty State -->
-        <div class="empty-state" *ngIf="filteredArticles.length === 0">
+        <div class="empty-state" *ngIf="!loading && !error && filteredArticles.length === 0">
           <div class="empty-icon">📝</div>
           <h3>No hay artículos en esta categoría</h3>
           <p>Intenta seleccionar otra categoría</p>
