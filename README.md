@@ -28,8 +28,8 @@ Aplicación web full-stack para portfolio personal desarrollada con **Angular 19
 	
 ## 📁 Estructura del Proyecto
 	
-
-"""My_port_folio/
+'''
+My_port_folio/
 ├── backend/                 # Backend Flask
 │   ├── .env                # Variables de entorno (NO commit)
 │   ├── .env.example        # Ejemplo de variables de entorno
@@ -38,7 +38,7 @@ Aplicación web full-stack para portfolio personal desarrollada con **Angular 19
 ├── angular.json            # Configuración de Angular
 ├── README.md               # Este archivo
 └── .gitignore              # Archivos ignorados por Git
-"""
+'''
 	
 ## 📦 Requisitos Previos
 	
@@ -209,7 +209,7 @@ cd My_port_folio
 - **[Flask Documentation](https://flask.palletsprojects.com/)**: Documentación oficial de Flask
 - **[Google App Passwords](https://myaccount.google.com/apppasswords)**: Generar contraseñas de aplicación para Gmail
 	
-## 🔒 Seguridad
+# 🔒 Seguridad
 	
 - **NUNCA** hagas commit del archivo `.env` con credenciales reales
 - Usa variables de entorno para todas las credenciales sensibles
@@ -220,6 +220,4 @@ cd My_port_folio
 	
 **Fecha de última actualización**: Marzo 2025  
 **Versión**: 1.0  
-   224	**Estado**: ✅ Listo para Desarrollo Local
-   225	
-Review the changes and make sure they are as expected. Edit the file again if necessary.
+**Estado**: ✅ Listo para Desarrollo Local
