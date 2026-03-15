@@ -29,7 +29,7 @@ Aplicación web full-stack para portfolio personal desarrollada con **Angular 19
 ## 📁 Estructura del Proyecto
 	
 
-My_port_folio/
+"""My_port_folio/
 ├── backend/                 # Backend Flask
 │   ├── .env                # Variables de entorno (NO commit)
 │   ├── .env.example        # Ejemplo de variables de entorno
@@ -38,7 +38,7 @@ My_port_folio/
 ├── angular.json            # Configuración de Angular
 ├── README.md               # Este archivo
 └── .gitignore              # Archivos ignorados por Git
-
+"""
 	
 ## 📦 Requisitos Previos
 	
