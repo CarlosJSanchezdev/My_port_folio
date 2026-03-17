@@ -29,7 +29,7 @@
     </nav>
 
     <!-- CTA Button -->
-    <div class="header-actions" *ngIf="accessLevel >= 3">
+    <div class="header-actions" *ngIf="accessLevel() >= 3">
       <a [href]="cvUrl" target="_blank" class="btn btn-primary btn-sm">
         Descargar CV
       </a>
@@ -44,7 +44,7 @@
   </div>
 
   <!-- Mobile Navigation -->
-  <nav class="mobile-nav" [class.active]="mobileMenuOpen">
+  <nav class="mobile-nav" [class.active]="mobileMenuOpen()">
     <a routerLink="/about" routerLinkActive="active" class="mobile-nav-link" (click)="closeMobileMenu()">
       <span class="nav-icon">👋</span>
       <span>Sobre Mí</span>
@@ -61,7 +61,7 @@
       <span class="nav-icon">📧</span>
       <span>Contacto</span>
     </a>
-    <a *ngIf="accessLevel >= 3" [href]="cvUrl" target="_blank" class="mobile-nav-link mobile-cta">
+    <a *ngIf="accessLevel() >= 3" [href]="cvUrl" target="_blank" class="mobile-nav-link mobile-cta">
       Descargar CV
     </a>
   </nav>

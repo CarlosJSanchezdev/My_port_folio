@@ -1,5 +1,5 @@
 import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { Component, OnInit, ChangeDetectorRef, Inject, PLATFORM_ID } from '@angular/core';
+import { Component, OnInit, Inject, PLATFORM_ID, signal } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { AuthService } from '../services/auth.service';
 import { environment } from '../../environments/environment';
@@ -25,40 +25,27 @@ interface SkillCategory {
   styleUrls: ['./about.component.css']
 })
 export class AboutComponent implements OnInit {
-  stats = PERSONAL_INFO.stats;
-  accessLevel = 1;
-  cvUrl = `${environment.apiUrl}/protected/cv`;
+  // Signals para estado reactivo
+  readonly stats = PERSONAL_INFO.stats;
+  readonly accessLevel = signal<number>(1);
+  readonly cvUrl = `${environment.apiUrl}/protected/cv`;
 
   skillCategories: SkillCategory[] = [
-    {
-      name: 'Frontend',
-      skills: SKILLS.frontend
-    },
-    {
-      name: 'Backend',
-      skills: SKILLS.backend
-    },
-    {
-      name: 'Mobile',
-      skills: SKILLS.mobile
-    },
-    {
-      name: 'Tools & Others',
-      skills: SKILLS.tools
-    }
+    { name: 'Frontend', skills: SKILLS.frontend },
+    { name: 'Backend', skills: SKILLS.backend },
+    { name: 'Mobile', skills: SKILLS.mobile },
+    { name: 'Tools & Others', skills: SKILLS.tools }
   ];
 
   constructor(
     private authService: AuthService,
-    private cdr: ChangeDetectorRef,
     @Inject(PLATFORM_ID) private platformId: Object
   ) {}
 
   ngOnInit() {
     if (isPlatformBrowser(this.platformId)) {
       this.authService.authStatus$.subscribe(status => {
-        this.accessLevel = Number(status.access_level);
-        this.cdr.detectChanges();
+        this.accessLevel.set(Number(status.access_level));
       });
     }
   }
