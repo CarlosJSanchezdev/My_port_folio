@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { AuthService } from '../services/auth.service';
 import { environment } from '../../environments/environment';
@@ -12,28 +12,26 @@ import { environment } from '../../environments/environment';
   styleUrls: ['./header.component.css']
 })
 export class HeaderComponent implements OnInit {
-  mobileMenuOpen = false;
-  accessLevel = 1;
-  cvUrl = `${environment.apiUrl}/protected/cv`;
+  // Signals para estado reactivo
+  readonly mobileMenuOpen = signal(false);
+  readonly accessLevel = signal<number>(1);
+  readonly cvUrl = `${environment.apiUrl}/protected/cv`;
 
   constructor(
-    private authService: AuthService,
-    private cdr: ChangeDetectorRef
+    private authService: AuthService
   ) {}
 
   ngOnInit() {
     this.authService.authStatus$.subscribe(status => {
-      console.log('Header Access Level:', status.access_level);
-      this.accessLevel = Number(status.access_level);
-      this.cdr.detectChanges();
+      this.accessLevel.set(Number(status.access_level));
     });
   }
 
   toggleMobileMenu(): void {
-    this.mobileMenuOpen = !this.mobileMenuOpen;
+    this.mobileMenuOpen.update(value => !value);
   }
 
   closeMobileMenu(): void {
-    this.mobileMenuOpen = false;
+    this.mobileMenuOpen.set(false);
   }
 }

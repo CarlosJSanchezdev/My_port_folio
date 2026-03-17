@@ -167,6 +167,27 @@ body {
   transition: background-color var(--transition-base), color var(--transition-base);
 }
 
+/* Skip Link para accesibilidad */
+.skip-link {
+  position: absolute;
+  top: -40px;
+  left: 0;
+  background: var(--color-primary);
+  color: var(--color-text-inverse);
+  padding: var(--space-sm) var(--space-md);
+  z-index: 9999;
+  text-decoration: none;
+  font-weight: 600;
+  border-radius: 0 0 var(--radius-md) 0;
+  transition: top var(--transition-fast);
+}
+
+.skip-link:focus {
+  top: 0;
+  outline: 2px solid var(--color-primary-light);
+  outline-offset: 2px;
+}
+
 /* ========================================
    TYPOGRAPHY
    ======================================== */
