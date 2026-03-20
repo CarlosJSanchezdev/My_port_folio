@@ -20,7 +20,7 @@ export class VerificationModalComponent implements OnInit, OnDestroy {
   code = '';
   isVerifying = false;
   errorMessage = '';
-  timeRemaining = 900; // 15 minutos
+  timeRemaining = 600; // 10 minutos
   canResend = false;
   resendTimer = 60;
   
@@ -44,7 +44,7 @@ export class VerificationModalComponent implements OnInit, OnDestroy {
     if (this.isOpen) {
       this.code = '';
       this.errorMessage = '';
-      this.timeRemaining = 900;
+      this.timeRemaining = 600; // 10 minutos
       this.resendTimer = 60;
       this.canResend = false;
       this.clearTimers();

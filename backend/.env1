@@ -1,0 +1,16 @@
+# Flask Configuration
+SECRET_KEY=g4b1m1l4
+FLASK_ENV=development
+FLASK_DEBUG=True
+
+# Database Configuration - SQLite for local development
+DATABASE_URL=sqlite:///portfolio.db
+
+# Email Configuration (Gmail SMTP)
+MAIL_SERVER=smtp.gmail.com
+MAIL_PORT=587
+MAIL_USE_TLS=true
+MAIL_USE_SSL=false
+MAIL_USERNAME=cafefincasanrafael@gmail.com  
+MAIL_PASSWORD=suqrpbpzwfnetwov 
+MAIL_DEFAULT_SENDER=cafefincasanrafael@gmail.com

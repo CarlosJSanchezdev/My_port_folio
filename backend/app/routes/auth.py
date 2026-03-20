@@ -3,11 +3,17 @@ from app.models.email_verification import EmailVerification
 from app.models.owner_info import OwnerInfo
 from app.models.user import User
 from app import db
-from app.utils import send_verification_email, check_email_rate_limit
+from app.services.email_service import send_verification_email
 from datetime import datetime, timedelta
 import re
 
 bp = Blueprint('auth', __name__)
+
+# Rate limiting simple en memoria (para producción usar Redis)
+email_request_cache = {}
+RATE_LIMIT_WINDOW = 3600  # 1 hora
+MAX_EMAIL_REQUESTS = 5  # 5 solicitudes por hora
+
 
 @bp.route('/request-verification', methods=['POST'])
 def request_verification():
@@ -16,55 +22,65 @@ def request_verification():
         data = request.get_json()
         email = data.get('email')
         name = data.get('name', 'Usuario')
-        
+
         # Validar email
         if not email or not re.match(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$', email):
             return jsonify({
                 'success': False,
                 'error': 'Email inválido'
             }), 400
-        
-        # Verificar rate limiting usando caché en memoria (sin queries a BD)
-        allowed, remaining, retry_after = check_email_rate_limit(email)
-        
-        if not allowed:
-            return jsonify({
-                'success': False,
-                'error': f'Demasiados intentos. Intenta de nuevo en {retry_after} segundos.'
-            }), 429
-        
+
+        # Rate limiting simple
+        now = datetime.utcnow()
+        if email in email_request_cache:
+            # Limpiar solicitudes antiguas
+            email_request_cache[email] = [
+                ts for ts in email_request_cache[email]
+                if (now - ts).total_seconds() < RATE_LIMIT_WINDOW
+            ]
+            
+            if len(email_request_cache[email]) >= MAX_EMAIL_REQUESTS:
+                oldest = email_request_cache[email][0]
+                retry_after = int(RATE_LIMIT_WINDOW - (now - oldest).total_seconds())
+                return jsonify({
+                    'success': False,
+                    'error': f'Demasiados intentos. Intenta en {retry_after // 60} minutos.'
+                }), 429
+        else:
+            email_request_cache[email] = []
+
+        # Registrar esta solicitud
+        email_request_cache[email].append(now)
+
         # Crear nueva verificación
         verification = EmailVerification(email=email)
         db.session.add(verification)
         db.session.commit()
-        
-        # Enviar email de forma asíncrona (sin bloquear)
+
+        # Enviar email con Resend
         try:
             send_verification_email(email, name, verification.verification_code)
-            # No esperamos a que se complete el envío para responder
         except Exception as e:
-            # Logueamos el error pero no hacemos rollback ya que el email es asíncrono
-            current_app.logger.error(f"Email preparation failed: {str(e)}")
-            # Devolvemos éxito pero advertimos posible retraso
+            current_app.logger.error(f"Email send failed: {str(e)}")
+            # No fallamos la request, pero informamos
             return jsonify({
                 'success': True,
-                'message': 'Solicitud procesada. El código puede tardar unos minutos en llegar.',
-                'warning': 'El envío de email puede estar experimentando retrasos.',
-                'expires_in': 900  # 15 minutos en segundos
-            }), 202  # Accepted - procesamiento en segundo plano
-        
+                'message': 'Código generado. Si no llega en 1 minuto, revisa spam o solicita otro.',
+                'warning': 'Posible retraso en envío de email.'
+            }), 202
+
         return jsonify({
             'success': True,
             'message': 'Código enviado a tu email',
-            'expires_in': 900  # 15 minutos en segundos
+            'expires_in': 600  # 10 minutos
         }), 200
-        
+
     except Exception as e:
         db.session.rollback()
         current_app.logger.error(f"Error in request_verification: {str(e)}")
         return jsonify({
             'success': False,
-            'error': 'Error al procesar la solicitud. Intenta de nuevo más tarde.'
+            'error': 'Error al procesar la solicitud. Intenta más tarde.'
         }), 500
 
 @bp.route('/verify-code', methods=['POST'])
