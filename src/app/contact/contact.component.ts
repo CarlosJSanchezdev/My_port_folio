@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject, PLATFORM_ID } from '@angular/core';
+import { Component, OnInit, Inject, PLATFORM_ID, signal } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ContactService } from '../services/contact.service';
@@ -13,18 +13,23 @@ import { VerificationModalComponent } from '../components/verification-modal/ver
   styleUrls: ['./contact.component.css']
 })
 export class ContactComponent implements OnInit {
-  contactForm: FormGroup;
-  formMessage = '';
-  messageType: 'success' | 'error' = 'success';
-  isSubmitting = false;
-  
-  // Auth & Owner Info
-  accessLevel = 1;
-  ownerInfo: OwnerInfo[] = [];
-  isVerificationModalOpen = false;
-  verificationEmail = '';
-  verificationName = '';
-  isLoadingInfo = false;
+  // Signals para estado reactivo
+  readonly contactForm: FormGroup;
+  readonly formMessage = signal<string>('');
+  readonly messageType = signal<'success' | 'error' | 'info'>('info');
+  readonly isSubmitting = signal(false);
+  readonly accessLevel = signal<number>(1);
+  readonly ownerInfo = signal<OwnerInfo[]>([]);
+  readonly isVerificationModalOpen = signal(false);
+  readonly verificationEmail = signal('');
+  readonly verificationName = signal('');
+  readonly isLoadingInfo = signal(false);
+  readonly isVerified = signal(false);
+
+  // Claves para localStorage
+  private readonly VERIFIED_KEY = 'portfolio_verified';
+  private readonly VERIFIED_EMAIL_KEY = 'portfolio_verified_email';
+  private readonly VERIFIED_EXPIRY_KEY = 'portfolio_verified_expiry';
 
   constructor(
     private fb: FormBuilder,
@@ -42,75 +47,150 @@ export class ContactComponent implements OnInit {
 
   ngOnInit() {
     if (isPlatformBrowser(this.platformId)) {
-      // Suscribirse a cambios de estado de autenticación
+      // Verificar si ya está verificado en localStorage
+      this.checkStoredVerification();
+
+      // Suscribirse a cambios de autenticación
       this.authService.authStatus$.subscribe(status => {
-        this.accessLevel = status.access_level;
+        this.accessLevel.set(status.access_level);
+        
+        // Si el nivel es 3 o más, marcar como verificado
+        if (status.access_level >= 3) {
+          this.isVerified.set(true);
+        }
+        
         this.loadOwnerInfo();
       });
     }
   }
 
+  /**
+   * Verifica si hay una verificación guardada en localStorage
+   */
+  checkStoredVerification() {
+    const isVerified = localStorage.getItem(this.VERIFIED_KEY);
+    const expiry = localStorage.getItem(this.VERIFIED_EXPIRY_KEY);
+    
+    if (isVerified === 'true' && expiry) {
+      const expiryDate = new Date(expiry);
+      const now = new Date();
+      
+      // Verificación válida por 30 días
+      if (now < expiryDate) {
+        this.isVerified.set(true);
+        const email = localStorage.getItem(this.VERIFIED_EMAIL_KEY);
+        if (email) {
+          this.verificationEmail.set(email);
+        }
+      } else {
+        // Expirado, limpiar
+        this.clearStoredVerification();
+      }
+    }
+  }
+
+  /**
+   * Guarda la verificación en localStorage (30 días)
+   */
+  storeVerification(email: string) {
+    if (isPlatformBrowser(this.platformId)) {
+      const now = new Date();
+      const expiry = new Date(now.getTime() + (30 * 24 * 60 * 60 * 1000)); // 30 días
+      
+      localStorage.setItem(this.VERIFIED_KEY, 'true');
+      localStorage.setItem(this.VERIFIED_EMAIL_KEY, email);
+      localStorage.setItem(this.VERIFIED_EXPIRY_KEY, expiry.toISOString());
+      
+      this.isVerified.set(true);
+    }
+  }
+
+  /**
+   * Limpia la verificación almacenada
+   */
+  clearStoredVerification() {
+    if (isPlatformBrowser(this.platformId)) {
+      localStorage.removeItem(this.VERIFIED_KEY);
+      localStorage.removeItem(this.VERIFIED_EMAIL_KEY);
+      localStorage.removeItem(this.VERIFIED_EXPIRY_KEY);
+      this.isVerified.set(false);
+    }
+  }
+
   loadOwnerInfo() {
-    this.isLoadingInfo = true;
+    this.isLoadingInfo.set(true);
     this.authService.getOwnerInfo().subscribe({
       next: (response) => {
         if (response.success) {
-          this.ownerInfo = response.data;
+          this.ownerInfo.set(response.data);
         }
-        this.isLoadingInfo = false;
+        this.isLoadingInfo.set(false);
       },
       error: (err) => {
         console.error('Error loading owner info:', err);
-        this.isLoadingInfo = false;
+        this.isLoadingInfo.set(false);
       }
     });
   }
 
   openVerificationModal() {
-    // Si el usuario ya llenó el formulario, usamos esos datos
-    if (this.contactForm.get('email')?.valid && this.contactForm.get('name')?.valid) {
-      this.verificationEmail = this.contactForm.get('email')?.value;
-      this.verificationName = this.contactForm.get('name')?.value;
+    // Si ya está verificado, no hacer nada
+    if (this.isVerified()) {
+      return;
+    }
+
+    const emailControl = this.contactForm.get('email');
+    const nameControl = this.contactForm.get('name');
+    
+    if (emailControl?.valid && nameControl?.valid) {
+      this.verificationEmail.set(emailControl.value);
+      this.verificationName.set(nameControl.value);
       this.requestVerificationCode();
     } else {
-      // Si no, pedimos que llene al menos nombre y email
-      this.formMessage = '⚠️ Por favor ingresa tu nombre y email para verificar tu identidad.';
-      this.messageType = 'error';
-      this.contactForm.get('name')?.markAsTouched();
-      this.contactForm.get('email')?.markAsTouched();
+      this.formMessage.set('⚠️ Por favor ingresa tu nombre y email para verificar tu identidad.');
+      this.messageType.set('info');
+      emailControl?.markAsTouched();
+      nameControl?.markAsTouched();
     }
   }
 
   requestVerificationCode() {
-    this.isSubmitting = true;
-    this.authService.requestVerification(this.verificationEmail, this.verificationName).subscribe({
+    this.isSubmitting.set(true);
+    this.authService.requestVerification(this.verificationEmail(), this.verificationName()).subscribe({
       next: () => {
-        this.isSubmitting = false;
-        this.isVerificationModalOpen = true;
+        this.isSubmitting.set(false);
+        this.isVerificationModalOpen.set(true);
       },
       error: (err) => {
-        this.isSubmitting = false;
-        this.formMessage = err.error?.error || 'Error al solicitar código. Intenta de nuevo.';
-        this.messageType = 'error';
+        this.isSubmitting.set(false);
+        this.formMessage.set(err.error?.error || 'Error al solicitar código. Intenta de nuevo.');
+        this.messageType.set('error');
       }
     });
   }
 
   onVerified() {
-    this.formMessage = '✅ ¡Verificación exitosa! Has desbloqueado información adicional.';
-    this.messageType = 'success';
-    setTimeout(() => this.formMessage = '', 5000);
+    // Guardar verificación en localStorage
+    this.storeVerification(this.verificationEmail());
+    
+    this.formMessage.set('✅ ¡Verificación exitosa! Información desbloqueada por 30 días.');
+    this.messageType.set('success');
+    
+    // Recargar información de owner
+    this.loadOwnerInfo();
+    
+    setTimeout(() => this.formMessage.set(''), 5000);
   }
 
   closeVerificationModal() {
-    this.isVerificationModalOpen = false;
+    this.isVerificationModalOpen.set(false);
   }
 
   onSubmit() {
     if (this.contactForm.valid) {
-      this.isSubmitting = true;
-      this.formMessage = '';
-      
+      this.isSubmitting.set(true);
+      this.formMessage.set('');
+
       const messageData = {
         name: this.contactForm.value.name,
         email: this.contactForm.value.email,
@@ -118,36 +198,25 @@ export class ContactComponent implements OnInit {
         message: this.contactForm.value.message
       };
 
-      // Send to API
       this.contactService.sendMessage(messageData).subscribe({
         next: (response) => {
-          this.formMessage = '✅ ¡Gracias por tu mensaje! Te responderé pronto.';
-          this.messageType = 'success';
-          this.isSubmitting = false;
+          this.formMessage.set('✅ ¡Gracias por tu mensaje! Te responderé pronto.');
+          this.messageType.set('success');
+          this.isSubmitting.set(false);
           this.contactForm.reset();
-          
-          // Clear message after 5 seconds
-          setTimeout(() => {
-            this.formMessage = '';
-          }, 5000);
+          setTimeout(() => this.formMessage.set(''), 5000);
         },
         error: (err) => {
           console.error('Error sending message:', err);
-          this.formMessage = '❌ Hubo un error al enviar el mensaje. Por favor, intenta de nuevo o contáctame directamente por email.';
-          this.messageType = 'error';
-          this.isSubmitting = false;
-          
-          // Clear error message after 7 seconds
-          setTimeout(() => {
-            this.formMessage = '';
-          }, 7000);
+          this.formMessage.set('❌ Hubo un error. Por favor contáctame directamente por email.');
+          this.messageType.set('error');
+          this.isSubmitting.set(false);
+          setTimeout(() => this.formMessage.set(''), 7000);
         }
       });
     } else {
-      this.formMessage = '❌ Por favor, completa todos los campos correctamente.';
-      this.messageType = 'error';
-      
-      // Mark all fields as touched to show errors
+      this.formMessage.set('❌ Por favor, completa todos los campos correctamente.');
+      this.messageType.set('error');
       Object.keys(this.contactForm.controls).forEach(key => {
         this.contactForm.get(key)?.markAsTouched();
       });

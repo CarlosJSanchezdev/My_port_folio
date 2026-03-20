@@ -26,39 +26,77 @@
 
           <!-- Dynamic Info Cards -->
           <div class="info-cards">
-            <div class="info-card" *ngFor="let info of ownerInfo">
-              <div class="info-icon">{{ info.icon }}</div>
-              <div class="info-content">
-                <h3>{{ info.label }}</h3>
+            @for (info of ownerInfo(); track info.type + info.value) {
+              <div class="info-card">
+                <div class="info-icon">{{ info.icon }}</div>
+                <div class="info-content">
+                  <h3>{{ info.label }}</h3>
 
-                <!-- Email Link -->
-                <a *ngIf="info.type === 'email'" [href]="'mailto:' + info.value">{{ info.value }}</a>
+                  <!-- Email Link -->
+                  @if (info.type === 'email') {
+                    <a [href]="'mailto:' + info.value">{{ info.value }}</a>
+                  }
 
-                <!-- Phone/WhatsApp Link -->
-                <a *ngIf="info.type === 'phone' || info.type === 'whatsapp'" [href]="'tel:' + info.value">{{ info.value
-                  }}</a>
+                  <!-- Phone/WhatsApp Link (Solo verificados) -->
+                  @if (info.type === 'phone' || info.type === 'whatsapp') {
+                    @if (isVerified()) {
+                      <a [href]="'tel:' + info.value">{{ info.value }}</a>
+                    } @else {
+                      <span class="blur-info">🔒 Verifica tu email para ver</span>
+                    }
+                  }
 
-                <!-- Link -->
-                <a *ngIf="info.type === 'link' || info.type === 'linkedin' || info.type === 'github'"
-                  [href]="info.value" target="_blank">{{ info.value }}</a>
+                  <!-- Link -->
+                  @if (info.type === 'link' || info.type === 'linkedin' || info.type === 'github') {
+                    <a [href]="info.value" target="_blank">{{ info.value }}</a>
+                  }
 
-                <!-- Text -->
-                <p *ngIf="info.type === 'text' || info.type === 'location' || info.type === 'hours'">{{ info.value }}
-                </p>
+                  <!-- Text (Horarios - Solo verificados) -->
+                  @if (info.type === 'hours') {
+                    @if (isVerified()) {
+                      <p>{{ info.value }}</p>
+                    } @else {
+                      <span class="blur-info">🔒 Verifica tu email para ver</span>
+                    }
+                  }
 
-                <!-- File Download -->
-                <a *ngIf="info.type === 'file'" [href]="info.value" download class="download-link">⬇️ Descargar</a>
+                  <!-- Location (Público) -->
+                  @if (info.type === 'location' || info.type === 'text') {
+                    <p>{{ info.value }}</p>
+                  }
+
+                  <!-- File Download (Solo verificados) -->
+                  @if (info.type === 'file') {
+                    @if (isVerified()) {
+                      <a [href]="info.value" download class="download-link">⬇️ Descargar</a>
+                    } @else {
+                      <span class="blur-info">🔒 Verifica tu email para descargar</span>
+                    }
+                  }
+                </div>
               </div>
-            </div>
+            }
           </div>
 
-          <!-- Unlock Section (Only for Level 1) -->
-          <div class="unlock-section" *ngIf="accessLevel < 2">
-            <button class="unlock-btn" (click)="openVerificationModal()">
-              🔓 Desbloquear Información Adicional
-            </button>
-            <p class="unlock-hint">Verifica tu email para ver teléfono y horarios</p>
-          </div>
+          <!-- Unlock Section (Solo no verificados) -->
+          @if (!isVerified() && accessLevel() < 2) {
+            <div class="unlock-section">
+              <button class="unlock-btn" (click)="openVerificationModal()">
+                🔓 Desbloquear Información Premium
+              </button>
+              <p class="unlock-hint">
+                Verifica tu email para ver teléfono, WhatsApp y horarios • Válido por 30 días
+              </p>
+            </div>
+          }
+
+          <!-- Verified Badge -->
+          @if (isVerified()) {
+            <div class="verified-badge">
+              <span class="badge-icon">✅</span>
+              <span>Información Premium desbloqueada</span>
+            </div>
+          }
         </div>
       </div>
 
@@ -126,16 +164,16 @@
           </div>
 
           <!-- Submit Button -->
-          <button type="submit" class="btn btn-primary submit-btn" [disabled]="contactForm.invalid || isSubmitting"
-            [class.loading]="isSubmitting">
-            <span *ngIf="!isSubmitting">📨 Enviar Mensaje</span>
-            <span *ngIf="isSubmitting">⏳ Enviando...</span>
+          <button type="submit" class="btn btn-primary submit-btn" [disabled]="contactForm.invalid || isSubmitting()"
+            [class.loading]="isSubmitting()">
+            <span *ngIf="!isSubmitting()">📨 Enviar Mensaje</span>
+            <span *ngIf="isSubmitting()">⏳ Enviando...</span>
           </button>
 
           <!-- Form Message -->
-          <div class="form-message" *ngIf="formMessage" [class.success]="messageType === 'success'"
-            [class.error]="messageType === 'error'">
-            {{ formMessage }}
+          <div class="form-message" *ngIf="formMessage()" [class.success]="messageType() === 'success'"
+            [class.error]="messageType() === 'error'">
+            {{ formMessage() }}
           </div>
         </form>
       </div>
@@ -169,5 +207,5 @@
 </div>
 
 <!-- Verification Modal -->
-<app-verification-modal [isOpen]="isVerificationModalOpen" [email]="verificationEmail" [name]="verificationName"
+<app-verification-modal [isOpen]="isVerificationModalOpen()" [email]="verificationEmail()" [name]="verificationName()"
   (verified)="onVerified()" (closed)="closeVerificationModal()"></app-verification-modal>
