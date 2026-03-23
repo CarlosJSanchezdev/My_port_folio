@@ -41,15 +41,15 @@ class Config:
     MAIL_ASCII_ATTACHMENTS = True  # Para mejor compatibilidad
     
     # Session configuration
-    SESSION_TYPE = 'cookie'  # Cookie-based sessions for production (Render)
-    SESSION_PERMANENT = True
+    SESSION_TYPE = 'filesystem'
+    SESSION_PERMANENT = False
     SESSION_USE_SIGNER = True
-    SESSION_COOKIE_SECURE = True  # HTTPS en producción
+    SESSION_COOKIE_SECURE = False  # Set to True in production with HTTPS
     SESSION_COOKIE_HTTPONLY = True
     SESSION_COOKIE_SAMESITE = 'Lax'
-    SESSION_COOKIE_DOMAIN = None  # Allow cookies en todos los dominios
+    SESSION_COOKIE_DOMAIN = None  # Allow cookies on localhost
     SESSION_COOKIE_NAME = 'portfolio_session'
-    PERMANENT_SESSION_LIFETIME = 2592000  # 30 días (igual que localStorage)
+    PERMANENT_SESSION_LIFETIME = 3600  # 1 hora
     
     # Logging configuration
     LOG_LEVEL = os.getenv('LOG_LEVEL', 'INFO')
