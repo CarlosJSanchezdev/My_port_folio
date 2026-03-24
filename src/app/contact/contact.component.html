@@ -37,9 +37,9 @@
                     <a [href]="'mailto:' + info.value">{{ info.value }}</a>
                   }
 
-                  <!-- Phone/WhatsApp Link (Solo verificados) -->
+                  <!-- Phone/WhatsApp Link (Solo access_level >= 3) -->
                   @if (info.type === 'phone' || info.type === 'whatsapp') {
-                    @if (isVerified()) {
+                    @if (accessLevel() >= 3) {
                       <a [href]="'tel:' + info.value">{{ info.value }}</a>
                     } @else {
                       <span class="blur-info">🔒 Verifica tu email para ver</span>
@@ -51,9 +51,9 @@
                     <a [href]="info.value" target="_blank">{{ info.value }}</a>
                   }
 
-                  <!-- Text (Horarios - Solo verificados) -->
+                  <!-- Text (Horarios - Solo access_level >= 3) -->
                   @if (info.type === 'hours') {
-                    @if (isVerified()) {
+                    @if (accessLevel() >= 3) {
                       <p>{{ info.value }}</p>
                     } @else {
                       <span class="blur-info">🔒 Verifica tu email para ver</span>
@@ -65,9 +65,9 @@
                     <p>{{ info.value }}</p>
                   }
 
-                  <!-- File Download (Solo verificados) -->
+                  <!-- File Download (Solo access_level >= 3) -->
                   @if (info.type === 'file') {
-                    @if (isVerified()) {
+                    @if (accessLevel() >= 3) {
                       <a [href]="info.value" download class="download-link">⬇️ Descargar</a>
                     } @else {
                       <span class="blur-info">🔒 Verifica tu email para descargar</span>
@@ -79,7 +79,7 @@
           </div>
 
           <!-- Unlock Section (Solo no verificados) -->
-          @if (!isVerified() && accessLevel() < 2) {
+          @if (accessLevel() < 3) {
             <div class="unlock-section">
               <button class="unlock-btn" (click)="openVerificationModal()">
                 🔓 Desbloquear Información Premium
@@ -91,7 +91,7 @@
           }
 
           <!-- Verified Badge -->
-          @if (isVerified()) {
+          @if (accessLevel() >= 3) {
             <div class="verified-badge">
               <span class="badge-icon">✅</span>
               <span>Información Premium desbloqueada</span>
