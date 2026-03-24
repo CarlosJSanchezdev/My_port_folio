@@ -222,6 +222,17 @@ def get_auth_status():
     user_id = session.get('user_id')
     access_level = session.get('access_level', 1)
     
+    # Si no hay sesión, buscar token JWT en header Authorization
+    if not user_id:
+        if 'Authorization' in request.headers:
+            auth_header = request.headers['Authorization']
+            if auth_header.startswith('Bearer '):
+                token = auth_header.split(' ')[1]
+                payload = decode_token(token)
+                if payload:
+                    user_id = payload.get('user_id')
+                    access_level = payload.get('access_level', 1)
+    
     if user_id:
         user = User.query.get(user_id)
         return jsonify({
