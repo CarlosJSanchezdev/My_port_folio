@@ -4,6 +4,7 @@ from app.models.owner_info import OwnerInfo
 from app.models.user import User
 from app import db
 from app.services.email_service import send_verification_email
+from app.services.jwt_service import generate_token, decode_token, token_required
 from datetime import datetime, timedelta
 import re
 
@@ -152,15 +153,14 @@ def verify_code():
                 current_app.logger.info(f"User updated: {email}")
             
             db.session.commit()
-            
-            # Guardar en sesión
-            session['user_id'] = user.id
-            session['access_level'] = user.access_level
-            session['email'] = user.email
-            
+
+            # Generar JWT token
+            token = generate_token(user.id, user.email, user.access_level)
+
             return jsonify({
                 'success': True,
                 'message': 'Email verificado correctamente',
+                'token': token,
                 'user': user.to_dict()
             }), 200
             
@@ -184,9 +184,21 @@ def verify_code():
 def get_owner_info():
     """Retorna información del propietario según nivel de acceso"""
     try:
-        # Obtener nivel de acceso del usuario
-        access_level = session.get('access_level', 1)
-
+        # Buscar token en header Authorization
+        token = None
+        access_level = 1
+        
+        if 'Authorization' in request.headers:
+            auth_header = request.headers['Authorization']
+            if auth_header.startswith('Bearer '):
+                token = auth_header.split(' ')[1]
+        
+        # Si hay token válido, obtener access_level
+        if token:
+            payload = decode_token(token)
+            if payload:
+                access_level = payload['access_level']
+        
         # Obtener información según nivel de acceso
         info_items = OwnerInfo.query.filter(
             OwnerInfo.required_level <= access_level
