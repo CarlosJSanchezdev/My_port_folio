@@ -134,14 +134,14 @@ export class ContactComponent implements OnInit {
   }
 
   openVerificationModal() {
-    // Si ya está verificado, no hacer nada
-    if (this.isVerified()) {
+    // Si ya está verificado (access_level >= 3), no hacer nada
+    if (this.accessLevel() >= 3) {
       return;
     }
 
     const emailControl = this.contactForm.get('email');
     const nameControl = this.contactForm.get('name');
-    
+
     if (emailControl?.valid && nameControl?.valid) {
       this.verificationEmail.set(emailControl.value);
       this.verificationName.set(nameControl.value);
