@@ -187,13 +187,14 @@ def get_owner_info():
         # Obtener nivel de acceso del usuario
         access_level = session.get('access_level', 1)
 
-        # PRUEBA: Obtener TODOS los datos sin filtro para debug
-        info_items = OwnerInfo.query.all()
+        # Obtener información según nivel de acceso
+        info_items = OwnerInfo.query.filter(
+            OwnerInfo.required_level <= access_level
+        ).order_by(OwnerInfo.order, OwnerInfo.id).all()
 
         return jsonify({
             'success': True,
             'access_level': access_level,
-            'count': len(info_items),
             'data': [item.to_dict() for item in info_items]
         }), 200
 
