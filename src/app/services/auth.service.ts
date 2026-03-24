@@ -91,10 +91,27 @@ export class AuthService {
       try {
         const payload = JSON.parse(atob(token.split('.')[1]));
         if (payload.exp * 1000 > Date.now()) {
-          // Token válido
-          this.authStatusSubject.next({
-            authenticated: true,
-            access_level: payload.access_level || 1
+          // Token válido - verificar con el backend
+          this.http.get<AuthStatus>(`${this.apiUrl}/status`, { 
+            headers: this.createAuthHeaders(),
+            withCredentials: true 
+          }).subscribe({
+            next: (status) => {
+              if (status.authenticated) {
+                this.authStatusSubject.next(status);
+              } else {
+                // Token inválido en backend
+                this.removeToken();
+                this.authStatusSubject.next({ authenticated: false, access_level: 1 });
+              }
+            },
+            error: () => {
+              // Error al verificar con backend, usar datos locales
+              this.authStatusSubject.next({
+                authenticated: true,
+                access_level: payload.access_level || 1
+              });
+            }
           });
           return;
         }
