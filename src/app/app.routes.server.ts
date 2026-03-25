@@ -17,10 +17,10 @@ export const serverRoutes: ServerRoute[] = [
     renderMode: RenderMode.Server
   },
   
-  // Páginas interactivas → Client (no necesitan SEO)
+  // Páginas interactivas → Server (para funcionar al recargar)
   {
     path: 'contact',
-    renderMode: RenderMode.Client
+    renderMode: RenderMode.Server
   },
   {
     path: 'footer',
