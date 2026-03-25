@@ -106,10 +106,12 @@ export class AuthService {
               }
             },
             error: () => {
-              // Error al verificar con backend, usar datos locales
+              // Error al verificar con backend - no asumir autenticado
+              // Limpiar token y establecer como no autenticado
+              this.removeToken();
               this.authStatusSubject.next({
-                authenticated: true,
-                access_level: payload.access_level || 1
+                authenticated: false,
+                access_level: 1
               });
             }
           });
