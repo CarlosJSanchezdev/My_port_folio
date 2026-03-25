@@ -55,3 +55,8 @@ class Config:
     LOG_LEVEL = os.getenv('LOG_LEVEL', 'INFO')
     LOG_MAX_BYTES = int(os.getenv('LOG_MAX_BYTES', 10485760))  # 10 MB
     LOG_BACKUP_COUNT = int(os.getenv('LOG_BACKUP_COUNT', 10))
+    
+    # ==== CONFIGURACIÓN BREVO (Email) ====
+    BREVO_API_KEY = os.getenv('BREVO_API_KEY')
+    BREVO_SENDER_EMAIL = os.getenv('BREVO_SENDER_EMAIL', 'tu-email@gmail.com')
+    BREVO_SENDER_NAME = os.getenv('BREVO_SENDER_NAME', 'Carlos Sánchez Portfolio')
