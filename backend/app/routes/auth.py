@@ -1,10 +1,11 @@
-from flask import Blueprint, request, jsonify, session, current_app
+from flask import Blueprint, request, jsonify, session, current_app, make_response
 from app.models.email_verification import EmailVerification
 from app.models.owner_info import OwnerInfo
 from app.models.user import User
+from app.models.revoked_token import RevokedToken
 from app import db
 from app.services.email_service import send_verification_email
-from app.services.jwt_service import generate_token, decode_token, token_required
+from app.services.jwt_service import generate_token, decode_token, token_required, TOKEN_EXPIRY_HOURS
 from datetime import datetime, timedelta
 import re
 
@@ -58,17 +59,16 @@ def request_verification():
         db.session.add(verification)
         db.session.commit()
 
-        # Enviar email con Resend
+        # Enviar email con Brevo
         try:
             send_verification_email(email, name, verification.verification_code)
         except Exception as e:
             current_app.logger.error(f"Email send failed: {str(e)}")
-            # No fallamos la request, pero informamos
             return jsonify({
-                'success': True,
-                'message': 'Código generado. Si no llega en 1 minuto, revisa spam o solicita otro.',
-                'warning': 'Posible retraso en envío de email.'
-            }), 202
+                'success': False,
+                'error': 'Error al enviar el email. Solicita un nuevo código en unos minutos.',
+                'expires_in': 600
+            }), 500
 
         return jsonify({
             'success': True,
@@ -154,15 +154,26 @@ def verify_code():
             
             db.session.commit()
 
-            # Generar JWT token
-            token = generate_token(user.id, user.email, user.access_level)
+            # Generar JWT token (ahora retorna tuple con jti y exp)
+            token, jti, exp = generate_token(user.id, user.email, user.access_level)
 
-            return jsonify({
+            # Guardar token en httpOnly cookie (más seguro que localStorage)
+            response = make_response(jsonify({
                 'success': True,
                 'message': 'Email verificado correctamente',
-                'token': token,
                 'user': user.to_dict()
-            }), 200
+            }), 200)
+            
+            response.set_cookie(
+                'auth_token',
+                token,
+                httponly=True,
+                secure=True,  # Solo HTTPS en producción
+                samesite='Lax',
+                max_age=60 * 60 * 24 * 30  # 30 días
+            )
+            
+            return response
             
         except Exception as db_error:
             db.session.rollback()
@@ -184,7 +195,7 @@ def verify_code():
 def get_owner_info():
     """Retorna información del propietario según nivel de acceso"""
     try:
-        # Buscar token en header Authorization
+        # Buscar token en header Authorization o cookie
         token = None
         access_level = 1
         
@@ -192,6 +203,8 @@ def get_owner_info():
             auth_header = request.headers['Authorization']
             if auth_header.startswith('Bearer '):
                 token = auth_header.split(' ')[1]
+        elif request.cookies.get('auth_token'):
+            token = request.cookies.get('auth_token')
         
         # Si hay token válido, obtener access_level
         if token:
@@ -222,16 +235,21 @@ def get_auth_status():
     user_id = session.get('user_id')
     access_level = session.get('access_level', 1)
     
-    # Si no hay sesión, buscar token JWT en header Authorization
+    # Si no hay sesión, buscar token JWT en header Authorization o cookie
     if not user_id:
+        token = None
         if 'Authorization' in request.headers:
             auth_header = request.headers['Authorization']
             if auth_header.startswith('Bearer '):
                 token = auth_header.split(' ')[1]
-                payload = decode_token(token)
-                if payload:
-                    user_id = payload.get('user_id')
-                    access_level = payload.get('access_level', 1)
+        elif request.cookies.get('auth_token'):
+            token = request.cookies.get('auth_token')
+        
+        if token:
+            payload = decode_token(token)
+            if payload:
+                user_id = payload.get('user_id')
+                access_level = payload.get('access_level', 1)
     
     if user_id:
         user = User.query.get(user_id)
@@ -250,7 +268,29 @@ def get_auth_status():
 def logout():
     """Cierra la sesión del usuario"""
     session.clear()
-    return jsonify({
+    
+    # Agregar token a blacklist si existe
+    token = None
+    if 'Authorization' in request.headers:
+        auth_header = request.headers['Authorization']
+        if auth_header.startswith('Bearer '):
+            token = auth_header.split(' ')[1]
+    elif request.cookies.get('auth_token'):
+        token = request.cookies.get('auth_token')
+    
+    if token:
+        try:
+            payload = decode_token(token)
+            if payload and payload.get('jti'):
+                exp = datetime.utcnow() + timedelta(hours=TOKEN_EXPIRY_HOURS)
+                RevokedToken.add(payload['jti'], exp)
+        except Exception as e:
+            current_app.logger.error(f"Error adding token to blacklist: {str(e)}")
+    
+    # Limpiar cookie de autenticación
+    response = make_response(jsonify({
         'success': True,
         'message': 'Sesión cerrada correctamente'
-    }), 200
+    }), 200)
+    response.set_cookie('auth_token', '', expires=0, httponly=True, secure=True, samesite='Lax')
+    return response

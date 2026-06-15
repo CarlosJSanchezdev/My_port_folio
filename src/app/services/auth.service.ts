@@ -26,7 +26,6 @@ export interface OwnerInfo {
 })
 export class AuthService {
   private apiUrl = `${environment.apiUrl}/auth`;
-  private TOKEN_KEY = 'portfolio_auth_token';
   private authStatusSubject = new BehaviorSubject<AuthStatus>({
     authenticated: false,
     access_level: 1
@@ -43,86 +42,17 @@ export class AuthService {
     }
   }
 
-  /**
-   * Guarda el token en localStorage
-   */
-  private saveToken(token: string): void {
-    if (isPlatformBrowser(this.platformId)) {
-      localStorage.setItem(this.TOKEN_KEY, token);
-    }
-  }
-
-  /**
-   * Obtiene el token de localStorage
-   */
-  private getToken(): string | null {
-    if (isPlatformBrowser(this.platformId)) {
-      return localStorage.getItem(this.TOKEN_KEY);
-    }
-    return null;
-  }
-
-  /**
-   * Elimina el token de localStorage
-   */
-  private removeToken(): void {
-    if (isPlatformBrowser(this.platformId)) {
-      localStorage.removeItem(this.TOKEN_KEY);
-    }
-  }
-
-  /**
-   * Crea headers con el token JWT
-   */
-  private createAuthHeaders(): HttpHeaders {
-    const token = this.getToken();
-    if (token) {
-      return new HttpHeaders({
-        'Authorization': `Bearer ${token}`
-      });
-    }
-    return new HttpHeaders();
-  }
-
   checkAuthStatus(): void {
-    const token = this.getToken();
-    if (token) {
-      // Decodificar token para obtener access_level
-      try {
-        const payload = JSON.parse(atob(token.split('.')[1]));
-        if (payload.exp * 1000 > Date.now()) {
-          // Token válido - verificar con el backend
-          this.http.get<AuthStatus>(`${this.apiUrl}/status`, { 
-            headers: this.createAuthHeaders(),
-            withCredentials: true 
-          }).subscribe({
-            next: (status) => {
-              if (status.authenticated) {
-                this.authStatusSubject.next(status);
-              } else {
-                // Token inválido en backend
-                this.removeToken();
-                this.authStatusSubject.next({ authenticated: false, access_level: 1 });
-              }
-            },
-            error: () => {
-              // Error al verificar con backend - no asumir autenticado
-              // Limpiar token y establecer como no autenticado
-              this.removeToken();
-              this.authStatusSubject.next({
-                authenticated: false,
-                access_level: 1
-              });
-            }
-          });
-          return;
-        }
-      } catch (e) {
-        // Token inválido
+    this.http.get<AuthStatus>(`${this.apiUrl}/status`, { 
+      withCredentials: true 
+    }).subscribe({
+      next: (status) => {
+        this.authStatusSubject.next(status);
+      },
+      error: () => {
+        this.authStatusSubject.next({ authenticated: false, access_level: 1 });
       }
-      this.removeToken();
-    }
-    this.authStatusSubject.next({ authenticated: false, access_level: 1 });
+    });
   }
 
   requestVerification(email: string, name: string): Observable<any> {
@@ -132,8 +62,7 @@ export class AuthService {
   verifyCode(email: string, code: string, name: string): Observable<any> {
     return this.http.post(`${this.apiUrl}/verify-code`, { email, code, name }, { withCredentials: true }).pipe(
       tap((response: any) => {
-        if (response.success && response.token) {
-          this.saveToken(response.token);
+        if (response.success) {
           this.authStatusSubject.next({
             authenticated: true,
             access_level: response.user.access_level,
@@ -145,11 +74,10 @@ export class AuthService {
   }
 
   getOwnerInfo(): Observable<{ success: boolean; access_level: number; data: OwnerInfo[] }> {
-    return this.http.get<any>(`${this.apiUrl}/owner-info`, { headers: this.createAuthHeaders() });
+    return this.http.get<any>(`${this.apiUrl}/owner-info`, { withCredentials: true });
   }
 
   logout(): Observable<any> {
-    this.removeToken();
     return this.http.post(`${this.apiUrl}/logout`, {}, { withCredentials: true }).pipe(
       tap(() => {
         this.authStatusSubject.next({

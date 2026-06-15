@@ -86,16 +86,16 @@ export class VerificationModalComponent implements OnInit, OnDestroy {
 
   onCodeInput() {
     this.errorMessage = '';
-    // Permitir solo números
-    this.code = this.code.replace(/[^0-9]/g, '');
+    // Permitir solo caracteres alfanuméricos mayúsculas
+    this.code = this.code.replace(/[^A-Z0-9]/g, '').toUpperCase();
     
-    if (this.code.length === 6) {
+    if (this.code.length === 8) {
       this.verify();
     }
   }
 
   verify() {
-    if (this.code.length !== 6) return;
+    if (this.code.length !== 8) return;
     
     this.isVerifying = true;
     this.errorMessage = '';
@@ -118,10 +118,10 @@ export class VerificationModalComponent implements OnInit, OnDestroy {
     if (!this.canResend) return;
     
     this.authService.requestVerification(this.email, this.name).subscribe({
-      next: () => {
+      next: (response) => {
         this.canResend = false;
         this.resendTimer = 60;
-        this.timeRemaining = 900;
+        this.timeRemaining = response.expires_in || 600;
         this.startResendTimer();
         this.errorMessage = '';
         this.code = '';
