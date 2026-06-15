@@ -2,34 +2,51 @@
 Servicio de JWT para autenticación sin sesiones
 """
 import os
+import uuid
 import jwt
 from datetime import datetime, timedelta
 from functools import wraps
 from flask import request, jsonify, current_app, g
 
-SECRET_KEY = os.getenv('JWT_SECRET_KEY', os.getenv('SECRET_KEY', 'dev-secret-key'))
+SECRET_KEY = os.getenv('JWT_SECRET_KEY') or os.getenv('SECRET_KEY')
+if not SECRET_KEY:
+    raise ValueError("JWT_SECRET_KEY o SECRET_KEY debe estar configurado en variables de entorno")
+
 ALGORITHM = 'HS256'
 TOKEN_EXPIRY_HOURS = 720  # 30 días
 
-def generate_token(user_id: int, email: str, access_level: int) -> str:
-    """Genera un token JWT para el usuario"""
+def generate_token(user_id: int, email: str, access_level: int) -> tuple:
+    """Genera un token JWT para el usuario. Retorna (token, jti)"""
+    jti = str(uuid.uuid4())
+    exp = datetime.utcnow() + timedelta(hours=TOKEN_EXPIRY_HOURS)
     payload = {
         'user_id': user_id,
         'email': email,
         'access_level': access_level,
-        'exp': datetime.utcnow() + timedelta(hours=TOKEN_EXPIRY_HOURS),
+        'jti': jti,
+        'exp': exp,
         'iat': datetime.utcnow()
     }
-    return jwt.encode(payload, SECRET_KEY, algorithm=ALGORITHM)
+    token = jwt.encode(payload, SECRET_KEY, algorithm=ALGORITHM)
+    return token, jti, exp
 
 def decode_token(token: str) -> dict:
     """Decodifica y valida un token JWT"""
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        
+        # Verificar si el token está en la blacklist
+        from app.models.revoked_token import RevokedToken
+        if RevokedToken.is_revoked(payload.get('jti')):
+            current_app.logger.warning(f"Token revocado: {payload.get('jti')}")
+            return None
+        
         return payload
     except jwt.ExpiredSignatureError:
+        current_app.logger.warning("Token expirado")
         return None
-    except jwt.InvalidTokenError:
+    except jwt.InvalidTokenError as e:
+        current_app.logger.warning(f"Token inválido: {str(e)}")
         return None
 
 def token_required(f):
