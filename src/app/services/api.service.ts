@@ -10,20 +10,25 @@ import { environment } from '../../environments/environment';
 export class ApiService {
   private apiUrl = environment.apiUrl;
 
-  private httpOptions = {
-    headers: new HttpHeaders({
-      'Content-Type': 'application/json',
-      'Accept': 'application/json'
-    })
-  };
+  private jsonHeaders = new HttpHeaders({
+    'Content-Type': 'application/json',
+    'Accept': 'application/json'
+  });
 
   constructor(private http: HttpClient) {}
+
+  private options(withCredentials = false) {
+    return {
+      headers: this.jsonHeaders,
+      withCredentials
+    };
+  }
 
   /**
    * GET request
    */
-  get<T>(endpoint: string): Observable<T> {
-    return this.http.get<T>(`${this.apiUrl}/${endpoint}`, this.httpOptions)
+  get<T>(endpoint: string, withCredentials = false): Observable<T> {
+    return this.http.get<T>(`${this.apiUrl}/${endpoint}`, this.options(withCredentials))
       .pipe(
         retry(1),
         catchError(this.handleError)
@@ -33,8 +38,8 @@ export class ApiService {
   /**
    * POST request
    */
-  post<T>(endpoint: string, data: any): Observable<T> {
-    return this.http.post<T>(`${this.apiUrl}/${endpoint}`, JSON.stringify(data), this.httpOptions)
+  post<T>(endpoint: string, data: any, withCredentials = false): Observable<T> {
+    return this.http.post<T>(`${this.apiUrl}/${endpoint}`, JSON.stringify(data), this.options(withCredentials))
       .pipe(
         catchError(this.handleError)
       );
@@ -43,8 +48,8 @@ export class ApiService {
   /**
    * PUT request
    */
-  put<T>(endpoint: string, data: any): Observable<T> {
-    return this.http.put<T>(`${this.apiUrl}/${endpoint}`, JSON.stringify(data), this.httpOptions)
+  put<T>(endpoint: string, data: any, withCredentials = false): Observable<T> {
+    return this.http.put<T>(`${this.apiUrl}/${endpoint}`, JSON.stringify(data), this.options(withCredentials))
       .pipe(
         catchError(this.handleError)
       );
@@ -53,8 +58,8 @@ export class ApiService {
   /**
    * DELETE request
    */
-  delete<T>(endpoint: string): Observable<T> {
-    return this.http.delete<T>(`${this.apiUrl}/${endpoint}`, this.httpOptions)
+  delete<T>(endpoint: string, withCredentials = false): Observable<T> {
+    return this.http.delete<T>(`${this.apiUrl}/${endpoint}`, this.options(withCredentials))
       .pipe(
         catchError(this.handleError)
       );

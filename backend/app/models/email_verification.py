@@ -10,7 +10,7 @@ class EmailVerification(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(100), nullable=False, index=True)
-    verification_code = db.Column(db.String(8), nullable=False)
+    verification_code = db.Column(db.String(6), nullable=False)
     verified = db.Column(db.Boolean, default=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     expires_at = db.Column(db.DateTime, nullable=False)
@@ -23,9 +23,9 @@ class EmailVerification(db.Model):
 
     @staticmethod
     def generate_code():
-        """Genera código de 8 caracteres alfanuméricos (2.8T combinaciones)"""
+        """Genera código de 6 caracteres alfanuméricos"""
         chars = string.ascii_uppercase + string.digits
-        return ''.join(random.choices(chars, k=8))
+        return ''.join(random.choices(chars, k=6))
 
     def is_expired(self):
         """Verifica si el código ha expirado"""

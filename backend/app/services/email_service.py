@@ -1,16 +1,16 @@
 """
-Servicio de emails con Brevo
-Migrado desde Resend el 24/03/2026
+Servicio de emails con Resend
+API: https://resend.com/docs/api-reference/emails/send-email
 """
 import requests
 import os
 from flask import current_app
 
-BREVO_API_URL = "https://api.brevo.com/v3/smtp/email"
+RESEND_API_URL = "https://api.resend.com/emails"
 
 def send_verification_email(email: str, name: str, code: str) -> bool:
     """
-    Envía email de verificación usando Brevo API
+    Envía email de verificación usando Resend API
     
     Args:
         email: Email del destinatario
@@ -24,13 +24,13 @@ def send_verification_email(email: str, name: str, code: str) -> bool:
         Exception: Si el envío falla
     """
     try:
-        api_key = os.getenv('BREVO_API_KEY')
+        api_key = os.getenv('RESEND_API_KEY')
         if not api_key:
-            current_app.logger.error("BREVO_API_KEY no configurada")
+            current_app.logger.error("RESEND_API_KEY no configurada")
             raise Exception("Configuración de email incompleta")
         
-        sender_email = os.getenv('BREVO_SENDER_EMAIL', 'tu-email@gmail.com')
-        sender_name = os.getenv('BREVO_SENDER_NAME', 'Carlos Sánchez Portfolio')
+        sender_email = os.getenv('RESEND_SENDER_EMAIL', 'onboarding@resend.dev')
+        sender_name = os.getenv('RESEND_SENDER_NAME', 'Carlos Sánchez Portfolio')
         portfolio_url = os.getenv('PORTFOLIO_URL', 'http://localhost:4200')
         
         html_content = f"""<!DOCTYPE html>
@@ -118,50 +118,43 @@ Desarrollador Full Stack
 {portfolio_url}/contact"""
         
         payload = {
-            "sender": {
-                "name": sender_name,
-                "email": sender_email
-            },
-            "to": [{
-                "email": email,
-                "name": name
-            }],
+            "from": f"{sender_name} <{sender_email}>",
+            "to": [email],
             "subject": "🔐 Tu Código de Verificación - Portfolio Carlos Sánchez",
-            "htmlContent": html_content,
-            "textContent": text_content
+            "html": html_content,
+            "text": text_content
         }
         
         headers = {
-            "api-key": api_key,
-            "Content-Type": "application/json",
-            "Accept": "application/json"
+            "Authorization": f"Bearer {api_key}",
+            "Content-Type": "application/json"
         }
         
-        current_app.logger.info(f"Enviando email vía Brevo a {email}")
+        current_app.logger.info(f"Enviando email vía Resend a {email}")
         
         response = requests.post(
-            BREVO_API_URL, 
-            json=payload, 
-            headers=headers, 
+            RESEND_API_URL,
+            json=payload,
+            headers=headers,
             timeout=30
         )
         
         if response.status_code in [200, 201]:
             result = response.json()
-            current_app.logger.info(f"✅ Email enviado vía Brevo a {email}: {result.get('messageId', 'sin ID')}")
+            current_app.logger.info(f"✅ Email enviado vía Resend a {email}: {result.get('id', 'sin ID')}")
             return True
         else:
-            error_msg = f"Brevo API error {response.status_code}: {response.text}"
+            error_msg = f"Resend API error {response.status_code}: {response.text}"
             current_app.logger.error(f"❌ Error enviando email a {email}: {error_msg}")
             raise Exception(error_msg)
             
     except requests.exceptions.Timeout:
-        error_msg = "Timeout conectando con Brevo API"
+        error_msg = "Timeout conectando con Resend API"
         current_app.logger.error(f"❌ Timeout enviando email a {email}")
         raise Exception(error_msg)
         
     except requests.exceptions.ConnectionError:
-        error_msg = "Error de conexión con Brevo API"
+        error_msg = "Error de conexión con Resend API"
         current_app.logger.error(f"❌ Error de conexión enviando email a {email}")
         raise Exception(error_msg)
         

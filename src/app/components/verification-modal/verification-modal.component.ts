@@ -89,13 +89,13 @@ export class VerificationModalComponent implements OnInit, OnDestroy {
     // Permitir solo caracteres alfanuméricos mayúsculas
     this.code = this.code.replace(/[^A-Z0-9]/g, '').toUpperCase();
     
-    if (this.code.length === 8) {
+    if (this.code.length === 6) {
       this.verify();
     }
   }
 
   verify() {
-    if (this.code.length !== 8) return;
+    if (this.code.length !== 6) return;
     
     this.isVerifying = true;
     this.errorMessage = '';
