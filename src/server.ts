@@ -50,6 +50,14 @@ app.use('/**', (req, res, next) => {
 });
 
 /**
+ * SPA fallback: si SSR no pudo renderizar, servir index.html
+ * para que el enrutador de Angular tome el control en el cliente.
+ */
+app.get('*', (req, res) => {
+  res.sendFile(resolve(browserDistFolder, 'index.html'));
+});
+
+/**
  * Start the server if this module is the main entry point.
  * The server listens on the port defined by the `PORT` environment variable, or defaults to 4000.
  */

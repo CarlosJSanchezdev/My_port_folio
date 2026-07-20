@@ -48,7 +48,11 @@ export class BlogComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.loadPosts();
+    if (isPlatformBrowser(this.platformId)) {
+      this.loadPosts();
+    } else {
+      this.loading = false;
+    }
   }
 
   loadPosts() {
