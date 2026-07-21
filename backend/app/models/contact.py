@@ -11,13 +11,9 @@ class ContactMessage(db.Model): # Modelo para los mensajes de contacto
     message = db.Column(db.Text, nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     
-    # Campos de verificación
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=True)
+    # Nivel de verificación del remitente al enviar
     verification_level = db.Column(db.Integer, default=1)  # 1=anonymous, 2=verified, 3=premium
     verified_email = db.Column(db.String(100))
-    
-    # Relación con User
-    user = db.relationship('User', backref='contact_messages')
 
     def __repr__(self):
         return f'<ContactMessage from {self.name}>'
@@ -31,6 +27,5 @@ class ContactMessage(db.Model): # Modelo para los mensajes de contacto
             'message': self.message,
             'created_at': self.created_at.isoformat() if self.created_at else None,
             'verification_level': self.verification_level,
-            'verified_email': self.verified_email,
-            'user_id': self.user_id
+            'verified_email': self.verified_email
         }
