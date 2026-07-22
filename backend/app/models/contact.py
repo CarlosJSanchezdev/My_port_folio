@@ -1,7 +1,7 @@
 from app import db 
 from datetime import datetime
 
-class ContactMessage(db.Model): # Modelo para los mensajes de contacto
+class ContactMessage(db.Model):
 
     __tablename__ = 'contact_messages'
     id = db.Column(db.Integer, primary_key=True)
@@ -10,22 +10,16 @@ class ContactMessage(db.Model): # Modelo para los mensajes de contacto
     subject = db.Column(db.String(200), nullable=False)
     message = db.Column(db.Text, nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    
-    # Nivel de verificación del remitente al enviar
-    verification_level = db.Column(db.Integer, default=1)  # 1=anonymous, 2=verified, 3=premium
-    verified_email = db.Column(db.String(100))
 
     def __repr__(self):
         return f'<ContactMessage from {self.name}>'
 
-    def to_dict(self): #convertir el modelo a diccionario par JSON
+    def to_dict(self):
         return {
             'id': self.id,
             'name': self.name,
             'email': self.email,
             'subject': self.subject,
             'message': self.message,
-            'created_at': self.created_at.isoformat() if self.created_at else None,
-            'verification_level': self.verification_level,
-            'verified_email': self.verified_email
+            'created_at': self.created_at.isoformat() if self.created_at else None
         }
