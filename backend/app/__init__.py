@@ -63,6 +63,19 @@ def create_app(config_class=Config):
         response.headers['X-XSS-Protection'] = '1; mode=block'
         return response
 
+    # Middleware para OPTIONS preflight (CORS)
+    @app.before_request
+    def handle_preflight():
+        if request.method == 'OPTIONS':
+            origin = request.headers.get('Origin', '*')
+            response = jsonify({'status': 'ok'})
+            response.headers['Access-Control-Allow-Origin'] = origin
+            response.headers['Access-Control-Allow-Methods'] = 'GET, POST, PUT, DELETE, OPTIONS'
+            response.headers['Access-Control-Allow-Headers'] = 'Content-Type, Authorization, Accept'
+            response.headers['Access-Control-Allow-Credentials'] = 'true'
+            response.headers['Access-Control-Max-Age'] = '3600'
+            return response
+
     # Rate limiting básico
     request_log = defaultdict(list)
 
