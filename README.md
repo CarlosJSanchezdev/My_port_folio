@@ -1,59 +1,61 @@
-# MyPortFolio
+# MyPortFolio - Carlos Sánchez
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.2.12.
+Portfolio personal desarrollado con Angular 20 (SPA estático) + Flask backend desplegado en Render + PostgreSQL en Supabase.
 
-## Development server
+## Tech Stack
 
-To start a local development server, run:
+| Capa       | Tecnología                          |
+|------------|-------------------------------------|
+| Frontend   | Angular 20 (SSR migrado a SPA estático) |
+| Backend    | Flask + SQLAlchemy                  |
+| Base de datos | PostgreSQL (Supabase)            |
+| Emails     | Resend API                          |
+| Hosting    | Vercel (frontend), Render (backend) |
+
+## Arquitectura
+
+- **Frontend**: SPA estático compilado con `outputMode: "static"`. Sirve desde Vercel con rewrites para SPA.
+- **Backend**: API Flask en Render con CORS configurado para el dominio Vercel. Cookies con `SameSite=None` para entorno cross-site.
+- **Base de datos**: PostgreSQL en Supabase con migraciones Flask-Migrate.
+
+## Desarrollo local
 
 ```bash
+# Frontend
 ng serve
+
+# Backend
+cd backend
+python -m venv .venv && source .venv/bin/activate
+pip install -r requirements.txt
+flask run
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
-
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
-```bash
-ng generate component component-name
-```
-
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
-
-```bash
-ng generate --help
-```
-
-## Building
-
-To build the project run:
+## Build
 
 ```bash
 ng build
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+Los artefactos se generan en `dist/my-port-folio/browser`.
 
-## Running unit tests
+## Despliegue
 
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
+El frontend se despliega automáticamente en Vercel desde la rama `main`. El build command es `npm run build` y el output directory es `dist/my-port-folio/browser`.
 
-```bash
-ng test
+## Funcionalidades
+
+- Blog con artículos desde BD
+- Formulario de contacto con almacenamiento en BD
+- Verificación por email vía Resend (código de 6 dígitos)
+- Panel de administración de mensajes y blog
+- Diseño responsive
+
+## Variables de entorno backend (`.env`)
+
 ```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
+DATABASE_URL=postgresql://...
+RESEND_API_KEY=re_...
+FRONTEND_URL=https://carlosjsanchezdev.vercel.app
+SECRET_KEY=...
 ```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
