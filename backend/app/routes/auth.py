@@ -168,8 +168,8 @@ def verify_code():
                 'auth_token',
                 token,
                 httponly=True,
-                secure=True,  # Solo HTTPS en producción
-                samesite='Lax',
+                secure=True,
+                samesite='None',
                 max_age=60 * 60 * 24 * 30  # 30 días
             )
             
@@ -292,5 +292,5 @@ def logout():
         'success': True,
         'message': 'Sesión cerrada correctamente'
     }), 200)
-    response.set_cookie('auth_token', '', expires=0, httponly=True, secure=True, samesite='Lax')
+    response.set_cookie('auth_token', '', expires=0, httponly=True, secure=True, samesite='None')
     return response
