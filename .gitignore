@@ -59,10 +59,8 @@ backend/.venv/
 backend/venv/
 
 # Local Env - NUNCA hacer commit de .env con credenciales reales
-.env
-.env.local
-backend/.env
-backend/.env.local
+.env*
+backend/.env*
 
 # Logs
 *.log
